@@ -1,6 +1,6 @@
 package org.techcult.scaleos
 
 import androidx.compose.ui.window.ComposeUIViewController
-import org.techcult.scaleos.core.presentation.App
+import org.techcult.scaleos.core.presentation.ScaleOsApp
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController() = ComposeUIViewController { ScaleOsApp() }

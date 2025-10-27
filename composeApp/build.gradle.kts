@@ -42,6 +42,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.core.splashscreen) // Or the latest stable version
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -126,6 +128,9 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.techcult.scaleos"
             packageVersion = "1.0.0"
+            appResourcesRootDir=rootDir.resolve("drawable")
+            jvmArgs += "-splash:app/resources/SampleColor.png"
+
         }
     }
 }

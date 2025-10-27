@@ -5,22 +5,35 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import org.techcult.scaleos.core.presentation.App
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import org.techcult.scaleos.core.presentation.ScaleOsApp
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
 
+    var isLoading: Boolean = true
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+       val splashScreen= installSplashScreen()
+        enableEdgeToEdge()
+        splashScreen.setKeepOnScreenCondition {
+            isLoading
+        }
         setContent {
-            App()
+            ScaleOsApp(onLoading = {
+                isLoading = false
+            })
         }
     }
+
 }
 
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    ScaleOsApp()
 }
