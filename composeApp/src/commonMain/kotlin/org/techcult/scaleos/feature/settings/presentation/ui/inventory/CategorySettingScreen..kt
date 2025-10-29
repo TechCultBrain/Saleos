@@ -8,4 +8,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CategorySettingScreen(
 ) {
+
+    Text("CategorySettings Screen")
 }

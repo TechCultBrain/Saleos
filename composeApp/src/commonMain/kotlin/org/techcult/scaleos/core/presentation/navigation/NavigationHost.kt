@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.techcult.scaleos.feature.auth.presentation.navigation.authNavGraph
 import org.techcult.scaleos.feature.dashboard.presentation.ui.root.DashboardRouteScreen
-import org.techcult.scaleos.feature.settings.presentation.navigation.settingsNavGraph
 import org.techcult.scaleos.feature.splash.presentation.SplashScreen
 
 @Composable
@@ -46,6 +45,6 @@ fun MainNavHost(navController: NavHostController,onLoading:(Boolean)-> Unit) {
         //reportsNavGraph(navController)
 
         // ⚙️ Settings
-        settingsNavGraph(navController)
+       // settingsNavGraph(navController)
     }
 }

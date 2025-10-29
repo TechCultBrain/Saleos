@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.techcult.scaleos.feature.dashboard.DashboardRoute
 import org.techcult.scaleos.feature.dashboard.presentation.ui.CustomersScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.DashboardHomeScreen
@@ -14,7 +15,7 @@ import org.techcult.scaleos.feature.dashboard.presentation.ui.ProductsScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.PurchaseScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.ReportsScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.SalesScreen
-import org.techcult.scaleos.feature.dashboard.presentation.ui.SettingsEntryScreen
+import org.techcult.scaleos.feature.settings.presentation.navigation.SettingsNavGraph
 
 @Composable
 fun DashboardGraph(dashboardNavController: NavHostController, mainNavController: NavHostController, paddingValues: PaddingValues)
@@ -44,13 +45,12 @@ fun DashboardGraph(dashboardNavController: NavHostController, mainNavController:
         composable<DashboardRoute.Reports> {
             ReportsScreen()
         }
-
         composable<DashboardRoute.Settings> {
-            SettingsEntryScreen(
-                mainNavController,
-                modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
-            )
+            val settingsNavController = rememberNavController()
+            SettingsNavGraph(settingsNavController)
         }
+
+
 
 
     }

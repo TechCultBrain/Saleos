@@ -13,4 +13,9 @@ sealed class AppRoute(val route: String) {
     object Dashboard : AppRoute("dashboard")
     @Serializable
     object Home : AppRoute("home")
+    @Serializable
+    object Profile : AppRoute("profile")
+    @Serializable
+    object Settings : AppRoute("settings")
+
 }

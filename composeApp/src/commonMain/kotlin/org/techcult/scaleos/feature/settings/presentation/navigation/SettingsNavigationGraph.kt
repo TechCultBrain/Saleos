@@ -1,6 +1,8 @@
 package org.techcult.scaleos.feature.settings.presentation.navigation
 
+import androidx.compose.runtime.Composable
 import androidx.navigation.*
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.techcult.scaleos.core.presentation.navigation.AppRoute
 import org.techcult.scaleos.feature.settings.presentation.ui.Purchase.PurchaseSettingsScreen
@@ -27,17 +29,19 @@ import org.techcult.scaleos.feature.settings.presentation.ui.user.RolePermission
 import org.techcult.scaleos.feature.settings.presentation.ui.user.StaffManagementScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.user.UserManagementScreen
 
-fun NavGraphBuilder.settingsNavGraph(navController: NavHostController) {
-    navigation(
+
+@Composable
+fun SettingsNavGraph(navController: NavHostController) {
+    NavHost(
         startDestination = SettingsRoutes.Home.route,
-        route = "settings_graph"
+        navController = navController
     ) {
 
         // --- Home ---
         composable(SettingsRoutes.Home.route) {
             SettingsHomeScreen(
                 onNavigate = { route ->
-                    navController.navigate(AppRoute.Dashboard.route)
+                    navController.navigate(route)
                 }
             )
         }
