@@ -3,10 +3,9 @@ package org.techcult.scaleos.feature.dashboard.presentation.ui.root
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -46,7 +45,12 @@ fun DashboardRouteScreen(
 
             // Desktop - Navigation Rail
             if (deviceConfiguration == DeviceConfiguration.DESKTOP || deviceConfiguration == DeviceConfiguration.TABLET_LANDSCAPE) {
-                DashboardNavigationRail(navController = dashboardNavController, userRole, posType)
+                DashboardNavigationRail(
+                    navController = dashboardNavController,
+                    userRole,
+                    posType,
+                    modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
+                )
             }
 
 

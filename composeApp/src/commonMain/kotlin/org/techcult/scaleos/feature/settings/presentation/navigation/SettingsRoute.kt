@@ -13,6 +13,8 @@ sealed class SettingsRoutes(val route: String) {
     object Receipt : SettingsRoutes("settings/receipt")
     object Database : SettingsRoutes("settings/database")
     object Sync : SettingsRoutes("settings/sync")
+    object Printer : SettingsRoutes("settings/printer")
+
 
     // Users & Access
     object UserManagement : SettingsRoutes("settings/user_management")

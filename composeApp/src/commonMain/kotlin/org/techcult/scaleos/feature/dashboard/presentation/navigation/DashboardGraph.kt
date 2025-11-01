@@ -16,6 +16,7 @@ import org.techcult.scaleos.feature.dashboard.presentation.ui.PurchaseScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.ReportsScreen
 import org.techcult.scaleos.feature.dashboard.presentation.ui.SalesScreen
 import org.techcult.scaleos.feature.settings.presentation.navigation.SettingsNavGraph
+import org.techcult.scaleos.feature.settings.presentation.ui.SettingsRootScreen
 
 @Composable
 fun DashboardGraph(dashboardNavController: NavHostController, mainNavController: NavHostController, paddingValues: PaddingValues)
@@ -46,8 +47,7 @@ fun DashboardGraph(dashboardNavController: NavHostController, mainNavController:
             ReportsScreen()
         }
         composable<DashboardRoute.Settings> {
-            val settingsNavController = rememberNavController()
-            SettingsNavGraph(settingsNavController)
+            SettingsRootScreen()
         }
 
 
