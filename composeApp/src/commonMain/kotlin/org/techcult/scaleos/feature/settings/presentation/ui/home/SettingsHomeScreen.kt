@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.ktor.client.request.invoke
 import org.techcult.scaleos.core.utils.DeviceConfiguration
 
 @Composable
@@ -57,18 +58,14 @@ fun SettingsHomeContent(
 
     Scaffold(topBar = {
 
-    }
+    }, containerColor = Color(0xFFF9FAFB)
     ) { padding ->
 
         if (deviceConfiguration == DeviceConfiguration.DESKTOP || deviceConfiguration == DeviceConfiguration.TABLET_LANDSCAPE) {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().padding(
-                    top = padding.calculateTopPadding(),
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                ),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalItemSpacing = 16.dp
             ) {
@@ -78,11 +75,7 @@ fun SettingsHomeContent(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.padding(
-                    top = padding.calculateTopPadding().plus(16.dp),
-                    start = 16.dp,
-                    end = 16.dp
-                ),verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier,verticalArrangement = Arrangement.spacedBy(16.dp),contentPadding = PaddingValues(16.dp)
             ) {
                 items(settingsCategories) { category ->
                     SettingsCard(category = category, onNavigate = onNavigate)
@@ -102,7 +95,10 @@ fun SettingsCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 2.dp,
+        color = Color.White,
+
+
 
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -130,7 +126,7 @@ fun SettingsHeader(icon: ImageVector, title: String, subtitle: String) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                .background(Color(0xFFEFF6FF))
                 .padding(8.dp),
             tint = MaterialTheme.colorScheme.primary
         )

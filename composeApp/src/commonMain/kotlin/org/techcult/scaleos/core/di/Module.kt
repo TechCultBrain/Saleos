@@ -10,7 +10,8 @@ expect val platformModule: Module
 
 val coreModule = module {
 
-    includes(platformModule, settingsModule)
+
+    includes(settingsModule,platformModule)
     single {
         get<DatabaseFactory>().create()
 
