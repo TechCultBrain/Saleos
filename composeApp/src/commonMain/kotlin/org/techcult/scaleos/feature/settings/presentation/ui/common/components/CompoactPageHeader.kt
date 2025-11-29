@@ -1,7 +1,6 @@
 package org.techcult.scaleos.feature.settings.presentation.ui.common.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,15 +9,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -32,9 +29,8 @@ fun CompactPageHeader(
     onBack: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         Icon(
@@ -43,6 +39,7 @@ fun CompactPageHeader(
             modifier = Modifier.clickable() {
                 onBack()
             })
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = title,
@@ -53,11 +50,10 @@ fun CompactPageHeader(
 
 
         onAdd?.let {
-            Button(
-                onClick = it,
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-            ) {
+            Row(modifier = Modifier.padding(8.dp).clip(MaterialTheme.shapes.small).clickable {
+                onAdd()
+            }, verticalAlignment = Alignment.CenterVertically) {
+
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add",

@@ -18,7 +18,7 @@ interface UnitDao {
     // 🔹 Soft delete (mark as deleted)
     @Query("""
         UPDATE units 
-        SET isDeleted = 1, updatedAt = :updatedAt, updatedBy = :updatedBy 
+        SET isAvailable = 1, updatedAt = :updatedAt, updatedBy = :updatedBy 
         WHERE id = :id
     """)
     suspend fun softDeleteUnit(id: String, updatedAt: String, updatedBy: String?)
@@ -26,7 +26,7 @@ interface UnitDao {
     // 🔹 Restore a soft-deleted unit
     @Query("""
         UPDATE units 
-        SET isDeleted = 0, updatedAt = :updatedAt, updatedBy = :updatedBy 
+        SET isAvailable = 0, updatedAt = :updatedAt, updatedBy = :updatedBy 
         WHERE id = :id
     """)
     suspend fun restoreUnit(id: String, updatedAt: String, updatedBy: String?)
@@ -36,21 +36,32 @@ interface UnitDao {
     suspend fun deleteUnitPermanently(id: String)
 
     // 🔹 Get all active (non-deleted) units
-    @Query("SELECT * FROM units WHERE isDeleted = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM units WHERE isAvailable = 0 ORDER BY name ASC")
     fun getAllUnits(): Flow<List<UnitEntity>>
 
     // 🔹 Get unit by ID
-    @Query("SELECT * FROM units WHERE id = :id AND isDeleted = 0 LIMIT 1")
+    @Query("SELECT * FROM units WHERE id = :id AND isAvailable = 0 LIMIT 1")
     suspend fun getUnitById(id: String): UnitEntity?
 
     // 🔹 Search units by name or symbol
     @Query("""
         SELECT * FROM units 
-        WHERE isDeleted = 0 
-        AND (name LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%') 
+        WHERE   
+            -- availability filter using CASE
+            CASE 
+                WHEN :availability = 0 THEN 1                            -- ALL
+                WHEN :availability = 1 THEN isAvailable = 1               -- AVAILABLE
+                WHEN :availability = 2 THEN isAvailable = 0               -- UNAVAILABLE
+            END
+            AND (
+                :query IS NULL 
+                OR :query = '' 
+                OR LOWER(name) LIKE '%' || LOWER(:query) || '%' 
+                OR LOWER(name) LIKE '%' || LOWER(:query) || '%'
+            )
         ORDER BY name ASC
     """)
-    fun searchUnits(query: String): Flow<List<UnitEntity>>
+    fun observeUnitsFiltered(availability: Int, query: String?): Flow<List<UnitEntity>>
 
     // 🔹 Get all including deleted (for sync)
     @Query("SELECT * FROM units ORDER BY updatedAt DESC")

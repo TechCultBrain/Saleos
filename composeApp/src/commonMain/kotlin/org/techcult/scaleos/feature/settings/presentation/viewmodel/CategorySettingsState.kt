@@ -30,7 +30,7 @@ data class CategorySettingsState(
 
 sealed interface CategorySettingsAction {
     data class OnSearchTextChange(val text: String) : CategorySettingsAction
-    data class OnStatusFilterChange(val status: CategoryAvailabilityFilter) : CategorySettingsAction
+    data class OnStatusFilterChange(val status: AvailabilityFilter) : CategorySettingsAction
     data class OnSortFilterChange(val sort: String) : CategorySettingsAction
     data object OnAddCategoryClick : CategorySettingsAction
     data class OnFilterClick(val isBottomSheetOpen: Boolean) : CategorySettingsAction
@@ -51,7 +51,7 @@ sealed interface CategorySettingsAction {
 
 }
 
-enum class CategoryAvailabilityFilter(val dbValue: Int) {
+enum class AvailabilityFilter(val dbValue: Int) {
     ALL(0),
     AVAILABLE(1),
     UNAVAILABLE(2)

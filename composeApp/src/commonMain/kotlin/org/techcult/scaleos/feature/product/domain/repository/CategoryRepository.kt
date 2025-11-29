@@ -4,7 +4,7 @@ import com.techcult.salesman.core.domain.DataError
 import com.techcult.salesman.core.domain.Result
 import kotlinx.coroutines.flow.Flow
 import org.techcult.scaleos.feature.product.domain.model.Category
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategoryAvailabilityFilter
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 
 interface CategoryRepository {
 
@@ -33,7 +33,7 @@ interface CategoryRepository {
     suspend fun getAllForSync(): List<Category>
 
     fun observeCategoriesFiltered(
-        availability: CategoryAvailabilityFilter,      // 0 = ALL, 1 = AVAILABLE, 2 = UNAVAILABLE
+        availability: AvailabilityFilter,      // 0 = ALL, 1 = AVAILABLE, 2 = UNAVAILABLE
         query: String?          // nullable search text
     ): Flow<List<Category>>
 

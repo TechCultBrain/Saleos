@@ -27,13 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategoryAvailabilityFilter
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 
 @Composable
 fun MyFilterChip(
-    options: List<CategoryAvailabilityFilter>,
+    options: List<AvailabilityFilter>,
     selectedOption: String,
-    onOptionSelected: (CategoryAvailabilityFilter) -> Unit,
+    onOptionSelected: (AvailabilityFilter) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }

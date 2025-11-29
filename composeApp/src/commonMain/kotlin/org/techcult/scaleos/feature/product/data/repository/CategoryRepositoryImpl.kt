@@ -14,7 +14,7 @@ import org.techcult.scaleos.feature.product.data.mapper.toDomain
 import org.techcult.scaleos.feature.product.data.mapper.toEntity
 import org.techcult.scaleos.feature.product.domain.model.Category
 import org.techcult.scaleos.feature.product.domain.repository.CategoryRepository
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategoryAvailabilityFilter
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -68,7 +68,7 @@ class CategoryRepositoryImpl(
         dao.getAllForSync().map { it.toDomain() }
 
     override fun observeCategoriesFiltered(
-        availability: CategoryAvailabilityFilter,
+        availability: AvailabilityFilter,
         query: String?
     ): Flow<List<Category>> {
         return dao.observeCategoriesFiltered(

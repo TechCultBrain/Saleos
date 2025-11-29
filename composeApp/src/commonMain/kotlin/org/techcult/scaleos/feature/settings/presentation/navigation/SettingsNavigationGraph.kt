@@ -17,6 +17,7 @@ import org.techcult.scaleos.feature.settings.presentation.ui.general.ReceiptSett
 import org.techcult.scaleos.feature.settings.presentation.ui.general.StoreSettingsScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.home.SettingsHomeScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.BatchSettingsScreen
+import org.techcult.scaleos.feature.settings.presentation.ui.inventory.BrandSettingsScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.CategorySettingScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.DepartmentSettingScreen
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.InventorySettingScreen
@@ -67,16 +68,25 @@ fun SettingsNavGraph(navController: NavHostController,paddingValues: PaddingValu
         composable(SettingsRoutes.Discount.route) { DiscountSettingsScreen() }
 
         // --- Products & Inventory ---
-        composable(SettingsRoutes.Product.route) { ProductSettingScreen() }
+        composable(SettingsRoutes.Product.route) { ProductSettingScreen(onBack = {
+            navController.navigateUp()
+        }) }
         composable(SettingsRoutes.Category.route) { CategorySettingScreen(
             onBack = {
                 navController.navigateUp()
             }
         ) }
-        composable(SettingsRoutes.Department.route) { DepartmentSettingScreen() }
+        composable(SettingsRoutes.Brand.route) { BrandSettingsScreen(onBack = {
+            navController.navigateUp()
+        }) }
+        composable(SettingsRoutes.Department.route) { DepartmentSettingScreen(onBack = {
+            navController.navigateUp()
+        }) }
         composable(SettingsRoutes.Supplier.route) { SupplierSettingScreen() }
         composable(SettingsRoutes.Inventory.route) { InventorySettingScreen() }
-        composable(SettingsRoutes.Unit.route) { UnitSettingScreen() }
+        composable(SettingsRoutes.Unit.route) { UnitSettingScreen(onBack = {
+            navController.navigateUp()
+        }) }
         composable(SettingsRoutes.Batch.route) { BatchSettingsScreen() }
         composable(SettingsRoutes.PurchaseSettings.route) { PurchaseSettingsScreen() }
 

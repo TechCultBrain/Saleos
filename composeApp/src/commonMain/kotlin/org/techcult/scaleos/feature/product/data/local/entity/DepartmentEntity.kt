@@ -8,13 +8,13 @@ import kotlin.uuid.Uuid
 
 @Entity(tableName = "departments")
 data class DepartmentEntity @OptIn(ExperimentalUuidApi::class) constructor(
-    @PrimaryKey val id: String= Uuid.random().toString(),
+    @PrimaryKey val id: String,
     val departmentName: String,
     val description: String?,
-    val isDeleted: Boolean = false,
+    val isAvailable: Boolean = false,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime? = null,
-    val updatedBy: String,
-    val createdBy: String,
+    val updatedBy: String?=null,
+    val createdBy: String?=null,
 
 )

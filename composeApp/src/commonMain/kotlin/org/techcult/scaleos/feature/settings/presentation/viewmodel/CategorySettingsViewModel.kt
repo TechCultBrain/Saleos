@@ -34,7 +34,7 @@ import kotlin.uuid.Uuid
 class CategorySettingsViewModel(val repo: CategoryRepository) : ViewModel() {
 
 
-    private val filter = MutableStateFlow(CategoryAvailabilityFilter.ALL)
+    private val filter = MutableStateFlow(AvailabilityFilter.ALL)
     private val searchQuery = MutableStateFlow<String?>(null)
 
     private val _state = MutableStateFlow(CategorySettingsState())
@@ -62,7 +62,7 @@ class CategorySettingsViewModel(val repo: CategoryRepository) : ViewModel() {
         initialValue = emptyList()
     )
 
-    fun setFilter(newFilter: CategoryAvailabilityFilter) {
+    fun setFilter(newFilter: AvailabilityFilter) {
         filter.value = newFilter
     }
 
@@ -231,6 +231,7 @@ class CategorySettingsViewModel(val repo: CategoryRepository) : ViewModel() {
                                         .toLocalDateTime(timeZone = TimeZone.currentSystemDefault()),
                                     isAvailable = _state.value.isAvailable,
                                 )
+                            }
                                 repo.upsertCategory(category = category).onSuccess {
                                     _event.send(CategoryEvents.OnSuccess(if (state.value.isEditMode) "Category Updated Successfully" else "Category Created Successfully"))
 
@@ -241,7 +242,7 @@ class CategorySettingsViewModel(val repo: CategoryRepository) : ViewModel() {
                                 resetFields()
 
                             }
-                        }
+
                     } catch (e: Exception) {
                         viewModelScope.launch {
                             _event.send(CategoryEvents.OnError("Error Occurred"))

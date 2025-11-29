@@ -12,10 +12,11 @@ import kotlin.uuid.Uuid
 data class UnitEntity(
     @PrimaryKey  val id: String= Uuid.random().toString(),
     val name: String,     // "Piece", "Box", "Case", etc.
-    val symbol: String?,  // "pcs", "box", etc.
-    val isDeleted: Boolean = false,
+    val symbol: String,  // "pcs", "box", etc.
+    val description: String? = null,
+    val isAvailable: Boolean = true,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime? = null,
-    val updatedBy: String,
-    val createdBy: String,
+    val updatedBy: String? = null,
+    val createdBy: String? = null,
 )

@@ -19,9 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Filter
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.SortByAlpha
+import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,7 +54,7 @@ import org.techcult.scaleos.core.utils.ObserveAsEvents
 import org.techcult.scaleos.feature.product.domain.model.Category
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.CompactPageHeader
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.WidePageHeader
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategoryAvailabilityFilter
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategoryEvents
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsAction
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsState
@@ -101,10 +99,11 @@ fun CategorySettingScreen(
 
         },sheetState = sheetState)
         {
-            CategoryAvailabilityFilter.entries.forEach { option ->
+            AvailabilityFilter.entries.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.name) },
                     onClick = {
+                        viewModel.setFilter(option)
                         viewModel.onEvent(CategorySettingsAction.OnFilterClick(isBottomSheetOpen = false))
 
                     })
@@ -243,7 +242,7 @@ fun WideScreenUi(
             Spacer(modifier = Modifier.width(16.dp))
             MyFilterChip(
                 modifier = Modifier.weight(1f),
-                options = CategoryAvailabilityFilter.entries,
+                options = AvailabilityFilter.entries,
                 selectedOption = state.statusFilter,
                 onOptionSelected = {
                     onAction(
@@ -284,7 +283,6 @@ fun CompactScreenUi(
 
 
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             SearchBar(
                 searchText = state.searchText,
@@ -299,7 +297,7 @@ fun CompactScreenUi(
                 onAction(CategorySettingsAction.OnFilterClick(isBottomSheetOpen = true))
 
             }){
-                Icon(imageVector = Icons.Outlined.SortByAlpha, contentDescription = "Edit")
+                Icon(imageVector = Icons.Outlined.FilterList, contentDescription = "Edit")
             }
 
 
@@ -367,7 +365,7 @@ fun CategoryListItem(
         )
         Column(
             horizontalAlignment = androidx.compose.ui.Alignment.Start,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp).weight(1f)
         ) {
 
             Text(
@@ -381,16 +379,14 @@ fun CategoryListItem(
                 category.parentId == null
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
         StatusChip(status = category.isAvailable)
-        Spacer(modifier = Modifier.weight(0.5f))
         Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
             IconButton(onClick = { onAction(CategorySettingsAction.OnEditCategoryClick(category)) }) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit")
             }
-            IconButton(onClick = { onAction(CategorySettingsAction.OnDeleteCategoryClick(category)) }) {
+            /*IconButton(onClick = { onAction(CategorySettingsAction.OnDeleteCategoryClick(category)) }) {
                 Icon(Icons.Outlined.Delete, contentDescription = "Delete", tint = Color.Red)
-            }
+            }*/
         }
 
 

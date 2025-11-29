@@ -34,6 +34,8 @@ sealed class SettingsRoutes(val route: String) {
     object Unit : SettingsRoutes("settings/unit")
     object Batch : SettingsRoutes("settings/batch")
 
+    object Brand: SettingsRoutes("settings/brand")
+
     // System
     object Appearance : SettingsRoutes("settings/appearance")
     object Localization : SettingsRoutes("settings/localization")

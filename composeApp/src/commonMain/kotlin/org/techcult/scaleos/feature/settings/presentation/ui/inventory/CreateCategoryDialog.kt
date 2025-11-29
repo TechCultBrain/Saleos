@@ -66,13 +66,13 @@ fun CreateCategoryDialog(
                     .padding(24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                DialogHeader(state.isEditMode) { onEvent(CategorySettingsAction.OnDismissDialog) }
+                DialogHeader(state.isEditMode, onDismissRequest = {onEvent(CategorySettingsAction.OnDismissDialog) })
                 Spacer(modifier = Modifier.height(24.dp))
                 BasicInfoFields(state, onEvent)
                 Spacer(modifier = Modifier.height(24.dp))
                 VisualDesignFields(state, onEvent)
                 Spacer(modifier = Modifier.height(24.dp))
-                AvailabilityField(state, onEvent)
+                AvailabilityField(state.isAvailable, onChange = {onEvent(CategorySettingsAction.OnAvailabilityChange(it))})
                 Spacer(modifier = Modifier.height(24.dp))
                 DialogButtons(
                     onDismiss = { onEvent(CategorySettingsAction.OnDismissDialog) },
@@ -85,15 +85,15 @@ fun CreateCategoryDialog(
 }
 
 @Composable
-private fun DialogHeader(isEditMode: Boolean, onDismissRequest: () -> Unit) {
+ fun DialogHeader(isEditMode: Boolean, onDismissRequest: () -> Unit,title: String = "Category") {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(
-                if (isEditMode) "Edit Category" else "Create New Category",
+                if (isEditMode) "Edit $title" else "Create New $title",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                if (isEditMode) "Edit category details" else "Add a new category",
+                if (isEditMode) "Edit $title details" else "Add a new $title",
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -197,7 +197,7 @@ private fun VisualDesignFields(
 }
 
 @Composable
-fun AvailabilityField(state: CategorySettingsState, onEvent: (CategorySettingsAction) -> Unit) {
+fun AvailabilityField(state: Boolean, onChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -208,21 +208,21 @@ fun AvailabilityField(state: CategorySettingsState, onEvent: (CategorySettingsAc
             Text("Make this category available", style = MaterialTheme.typography.bodySmall)
         }
         Switch(
-            checked = state.isAvailable,
-            onCheckedChange = { onEvent(CategorySettingsAction.OnAvailabilityChange(it)) })
+            checked = state,
+            onCheckedChange = { onChange(it) })
     }
 }
 
 
 @Composable
-private fun DialogButtons(onDismiss: () -> Unit, onCreate: () -> Unit, isEditMode: Boolean) {
+ fun DialogButtons(onDismiss: () -> Unit, onCreate: () -> Unit, isEditMode: Boolean,title: String = "Category") {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         OutlinedButton(onClick = onDismiss) {
             Text("Cancel")
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = onCreate) {
-            Text(if (isEditMode) "Update Category" else "Create Category")
+            Text(if (isEditMode) "Update $title" else "Create $title")
         }
     }
 }

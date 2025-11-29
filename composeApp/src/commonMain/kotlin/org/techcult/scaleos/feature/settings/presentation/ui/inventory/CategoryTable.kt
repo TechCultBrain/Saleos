@@ -37,6 +37,8 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
+import org.techcult.scaleos.core.utils.toCapitalizeFormat
+import org.techcult.scaleos.core.utils.toFormattedString
 import org.techcult.scaleos.feature.product.domain.model.Category
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsAction
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsState
@@ -148,7 +150,7 @@ fun CategoryTableRow(
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
-                    category.categoryName.first().uppercase() + category.categoryName.substring(1),
+                    text = category.categoryName.toCapitalizeFormat().toString(),
                     fontWeight = FontWeight.Medium
                 )
                 category.description?.let {
@@ -170,11 +172,9 @@ fun CategoryTableRow(
         Box(modifier = Modifier.weight(1f)) {
             StatusChip(category.isAvailable)
         }
-        val customFormat = LocalDateTime.Format {
-            monthName(MonthNames.ENGLISH_ABBREVIATED); char(' '); day(); chars(", "); year()
-        }
+
         Text(
-            category.updatedAt!!.format(customFormat),
+            category.updatedAt!!.toFormattedString().toString(),
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium
         )

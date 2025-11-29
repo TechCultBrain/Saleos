@@ -139,10 +139,26 @@ val settingsCategories = listOf(
                 route = SettingsRoutes.Supplier.route
             ),
             SettingsItemData(
+                title = "Departments",
+                subtitle = "Organize products into departments for better organization",
+                route = SettingsRoutes.Department.route
+            ),
+            SettingsItemData(
                 title = "Categories",
                 subtitle = "Organize products into categories and subcategories",
                 route = SettingsRoutes.Category.route
             ),
+            SettingsItemData(
+                title = "Brands",
+                subtitle = "Manage brands and differentiate products",
+                route = SettingsRoutes.Brand.route
+            ),
+            SettingsItemData(
+                title = "Inventory Management",
+                subtitle = "Track and manage inventory levels",
+                route = SettingsRoutes.Inventory.route
+            ),
+
             SettingsItemData(
                 title = "Stock Levels",
                 subtitle = "Monitor and manage inventory levels",
@@ -160,6 +176,24 @@ val settingsCategories = listOf(
                 route = SettingsRoutes.Batch.route,
                 tag = SettingsTag.NEW
             )
+        )
+    ), SettingsCategory(
+        title = "Purchase Settings",
+        subtitle = "Purchase management settings",
+        icon = Icons.Default.Inventory,
+        items = listOf(
+
+            SettingsItemData(
+                title = "Purchase Settings",
+                subtitle = "Manage purchase settings",
+                route = SettingsRoutes.PurchaseSettings.route,
+            ),
+            SettingsItemData(
+                title = "Supplier Management",
+                subtitle = "Manage supplier information and relationships",
+                route = SettingsRoutes.Supplier.route
+
+            ),
         )
     )
 )
