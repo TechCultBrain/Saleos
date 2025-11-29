@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -32,10 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.format
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
 import org.techcult.scaleos.core.utils.toCapitalizeFormat
 import org.techcult.scaleos.core.utils.toFormattedString
@@ -53,11 +48,11 @@ fun CategoryTable(
     categories: List<Category>
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
             .background(Color.White)
     ) {
         CategoryTableHeader()
-        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
+        HorizontalDivider(modifier = Modifier, thickness = 0.5.dp)
         if (state.isLoading) {
 
             Box(
@@ -72,8 +67,7 @@ fun CategoryTable(
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
+           ) {
                 if (categories.isEmpty()) {
                     item()
                     {
@@ -101,22 +95,55 @@ fun CategoryTable(
 
                 }
             }
-            }
         }
     }
+}
 
 
 @Composable
 fun CategoryTableHeader() {
-    Row(modifier = Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-       // Checkbox(checked = false, onCheckedChange = {})
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Checkbox(checked = false, onCheckedChange = {})
         Spacer(modifier = Modifier.width(16.dp))
-        Text("Category", modifier = Modifier.weight(3f), style = MaterialTheme.typography.titleMedium)
-        Text("Parent", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-        Text("Products", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-        Text("Status", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-        Text("Updated", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-        Text("Actions", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+        Text(
+            "Category",
+            modifier = Modifier.weight(3f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            "Parent",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            "Products",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            "Status",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            "Updated",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            "Actions",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
 
     }
 }
@@ -151,6 +178,7 @@ fun CategoryTableRow(
             Column {
                 Text(
                     text = category.categoryName.toCapitalizeFormat().toString(),
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
                 category.description?.let {
@@ -191,13 +219,15 @@ fun CategoryTableRow(
 
 @Composable
 fun StatusChip(status: Boolean) {
-    val color = if (status) Color(0xFFE3F3E8) else Color(0xFFFDE8E8)
-    val textColor = if (status) Color(0xFF4CAF50) else Color(0xFFD32F2F)
+    val color =
+        if (status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+    val textColor =
+        if (status) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer
     Text(
-        text = if (status) "Available" else "Unavailable",
+        text = if (status) "Active" else "Inactive",
         color = textColor,
         modifier = Modifier
-            .clip(RoundedCornerShape(50))
+            .clip(RoundedCornerShape(42))
             .background(color)
             .padding(horizontal = 12.dp, vertical = 4.dp),
         style = MaterialTheme.typography.bodySmall

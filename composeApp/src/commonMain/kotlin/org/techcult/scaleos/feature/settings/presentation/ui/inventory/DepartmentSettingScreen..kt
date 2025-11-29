@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -125,7 +126,9 @@ fun DepartmentSettingScreen(
 
             DeviceConfiguration.MOBILE_LANDSCAPE -> TODO()
             DeviceConfiguration.TABLET_PORTRAIT -> TODO()
-            DeviceConfiguration.TABLET_LANDSCAPE -> TODO()
+            DeviceConfiguration.TABLET_LANDSCAPE -> {
+                WideDepartmentScreenUi(state, viewModel::onAction, deptList)
+            }
             DeviceConfiguration.DESKTOP -> WideDepartmentScreenUi(state, viewModel::onAction, deptList)
         }
 
@@ -143,7 +146,7 @@ fun AddDepartmentDialog(state: DeptSettingState, action: (DeptSettingActions) ->
                 DialogHeader(
                     isEditMode = false,
                     onDismissRequest = { action(DeptSettingActions.OnDismissDialog) },
-                    title = "Unit"
+                    title = "Department"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -316,7 +319,7 @@ fun WideDepartmentScreenUi(
                 onAction(DeptSettingActions.OnAddDialogClick(isAddDialogOpen = true))
 
             },
-            addText = "Add Unit"
+            addText = "Add Department"
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -348,11 +351,11 @@ fun WideDepartmentScreenUi(
 fun UnitTable(state: DeptSettingState, action: (DeptSettingActions) -> Unit, x2: List<Department>) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clip(shape = MaterialTheme.shapes.medium)
             .background(color = androidx.compose.ui.graphics.Color.White)
     ) {
         DepartmentListHeader()
-        HorizontalDivider()
+        HorizontalDivider(thickness = 0.5.dp)
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center)
             {
@@ -370,26 +373,31 @@ fun UnitTable(state: DeptSettingState, action: (DeptSettingActions) -> Unit, x2:
 @Composable
 fun DepartmentListHeader() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
             "Department Name",
             modifier = Modifier.weight(4f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
         )
 
         Text("Status", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
         Text(
             text = "CreatedAt",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+
         )
         Text(
             "Actions",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+
         )
     }
 }
@@ -403,7 +411,7 @@ fun DepartmentList(deptList: List<Department>, onEdit: (Department) -> Unit) {
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "No Units Found")
+                    Text(text = "No Category Found")
                 }
             }
         }

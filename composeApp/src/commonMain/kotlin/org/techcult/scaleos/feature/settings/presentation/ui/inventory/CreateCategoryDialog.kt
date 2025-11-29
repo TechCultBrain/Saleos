@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.jetbrains.compose.resources.painterResource
@@ -90,7 +91,8 @@ fun CreateCategoryDialog(
         Column {
             Text(
                 if (isEditMode) "Edit $title" else "Create New $title",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
             )
             Text(
                 if (isEditMode) "Edit $title details" else "Add a new $title",
@@ -217,11 +219,11 @@ fun AvailabilityField(state: Boolean, onChange: (Boolean) -> Unit) {
 @Composable
  fun DialogButtons(onDismiss: () -> Unit, onCreate: () -> Unit, isEditMode: Boolean,title: String = "Category") {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        OutlinedButton(onClick = onDismiss) {
+        OutlinedButton(onClick = onDismiss, shape = MaterialTheme.shapes.medium) {
             Text("Cancel")
         }
         Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = onCreate) {
+        Button(onClick = onCreate, shape = MaterialTheme.shapes.medium) {
             Text(if (isEditMode) "Update $title" else "Create $title")
         }
     }

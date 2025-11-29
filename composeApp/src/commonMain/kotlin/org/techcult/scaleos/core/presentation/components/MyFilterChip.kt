@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
@@ -48,9 +49,10 @@ fun MyFilterChip(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
                 .background(
                     color = Color.White,
-                    shape = RoundedCornerShape(8.dp)
+
                 )
                 .clickable {
                     expanded = true

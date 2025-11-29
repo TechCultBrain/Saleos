@@ -19,12 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -51,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -67,20 +65,18 @@ import org.techcult.scaleos.core.utils.FilePicker
 import org.techcult.scaleos.core.utils.ObserveAsEvents
 import org.techcult.scaleos.core.utils.toFormattedString
 import org.techcult.scaleos.feature.product.domain.model.Brand
-import org.techcult.scaleos.feature.product.domain.model.Uom
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.CompactPageHeader
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.WidePageHeader
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingActions
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingState
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingsEvents
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingsViewModel
 import scaleos.composeapp.generated.resources.Res
 import scaleos.composeapp.generated.resources.img_placeholder
 
 @Composable
-fun BrandSettingsScreen(onBack: () -> Unit,viewModel: BrandSettingsViewModel= koinViewModel())
-{
+fun BrandSettingsScreen(onBack: () -> Unit, viewModel: BrandSettingsViewModel = koinViewModel()) {
     val sheetState = rememberModalBottomSheetState()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val brandList by viewModel.brandList.collectAsStateWithLifecycle()
@@ -106,6 +102,7 @@ fun BrandSettingsScreen(onBack: () -> Unit,viewModel: BrandSettingsViewModel= ko
 
 
             }
+
             else -> {}
         }
     }
@@ -147,20 +144,29 @@ fun BrandSettingsScreen(onBack: () -> Unit,viewModel: BrandSettingsViewModel= ko
 
         }
     }
-    if (state.isImagePreviewOpen)
-    {
+    if (state.isImagePreviewOpen) {
         Dialog(onDismissRequest = {
-            viewModel.onAction(BrandSettingActions.OnImagePreviewClick("",false))
-        }){
-            Surface(modifier = Modifier.size(300.dp), color = Color.White, shape = MaterialTheme.shapes.medium) {
+            viewModel.onAction(BrandSettingActions.OnImagePreviewClick("", false))
+        }) {
+            Surface(
+                modifier = Modifier.size(300.dp),
+                color = Color.White,
+                shape = MaterialTheme.shapes.medium
+            ) {
                 Box(modifier = Modifier.fillMaxSize())
                 {
                     AsyncImage(
                         model = state.brandImage,
                         contentDescription = "Brand Image",
                         modifier = Modifier.fillMaxSize(),
+                        onError = { it ->  },
+                        placeholder = painterResource(Res.drawable.img_placeholder),
+                        error = painterResource(Res.drawable.img_placeholder)
                     )
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         IconButton(onClick = {
                             viewModel.onAction(BrandSettingActions.OnImagePreviewClick("", false))
                         }) {
@@ -174,7 +180,10 @@ fun BrandSettingsScreen(onBack: () -> Unit,viewModel: BrandSettingsViewModel= ko
     }
 
     Scaffold(snackbarHost = {
-        androidx.compose.material3.SnackbarHost(hostState = snackBarHostState, modifier = Modifier.padding(bottom = 64.dp))
+        androidx.compose.material3.SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.padding(bottom = 64.dp)
+        )
     }) {
         when (deviceConfiguration) {
             DeviceConfiguration.MOBILE_PORTRAIT -> CompactBrandScreenUi(
@@ -185,7 +194,10 @@ fun BrandSettingsScreen(onBack: () -> Unit,viewModel: BrandSettingsViewModel= ko
 
             DeviceConfiguration.MOBILE_LANDSCAPE -> TODO()
             DeviceConfiguration.TABLET_PORTRAIT -> TODO()
-            DeviceConfiguration.TABLET_LANDSCAPE -> TODO()
+            DeviceConfiguration.TABLET_LANDSCAPE -> {
+                WideBrandScreenUi(state, viewModel::onAction, brandList)
+            }
+
             DeviceConfiguration.DESKTOP -> WideBrandScreenUi(state, viewModel::onAction, brandList)
         }
 
@@ -217,7 +229,7 @@ fun AddBrandDialog(state: BrandSettingState, action: (BrandSettingActions) -> Un
 
                     })
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("BrandImage", style = MaterialTheme.typography.bodyMedium)
+                Text("Brand Image", style = MaterialTheme.typography.labelMedium)
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -234,7 +246,7 @@ fun AddBrandDialog(state: BrandSettingState, action: (BrandSettingActions) -> Un
                             model = state.brandImage,
                             contentDescription = "Brand Image",
                             onError = { it ->
-                               // it.result.throwable.printStackTrace()
+                                // it.result.throwable.printStackTrace()
 
                             },
                             contentScale = ContentScale.FillBounds,
@@ -250,14 +262,14 @@ fun AddBrandDialog(state: BrandSettingState, action: (BrandSettingActions) -> Un
                         Button(onClick = {
                             action(BrandSettingActions.OnBrandImageAddClick(true))
 
-                        }) {
+                        }, shape = RoundedCornerShape(8.dp)) {
                             Text("Upload Image")
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         OutlinedButton(onClick = {
                             action(BrandSettingActions.OnBrandImageClear)
 
-                        }) {
+                        }, shape = RoundedCornerShape(8.dp)) {
                             Text("Clear Image")
                         }
                     }
@@ -468,11 +480,12 @@ fun WideBrandScreenUi(
 fun BrandTable(state: BrandSettingState, action: (BrandSettingActions) -> Unit, x2: List<Brand>) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clip(shape = MaterialTheme.shapes.medium)
             .background(color = androidx.compose.ui.graphics.Color.White)
-    ) {
+    )
+    {
         BrandListHeader()
-        HorizontalDivider()
+        HorizontalDivider(thickness = 0.4.dp)
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center)
             {
@@ -482,7 +495,7 @@ fun BrandTable(state: BrandSettingState, action: (BrandSettingActions) -> Unit, 
             BrandList(brandList = x2, onEdit = {
                 action(BrandSettingActions.OnEditOptionClick(it))
             }, onPreview = {
-                action(BrandSettingActions.OnImagePreviewClick(it,true))
+                action(BrandSettingActions.OnImagePreviewClick(it, true))
             })
         }
 
@@ -492,32 +505,40 @@ fun BrandTable(state: BrandSettingState, action: (BrandSettingActions) -> Unit, 
 @Composable
 fun BrandListHeader() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
             "Brand Name",
             modifier = Modifier.weight(3f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
         )
 
-        Text("Status", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+        Text(
+            "Status",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
         Text(
             text = "CreatedAt",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             "Actions",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
 
 @Composable
-fun BrandList(brandList: List<Brand>, onEdit: (Brand) -> Unit,onPreview:(String)->Unit) {
+fun BrandList(brandList: List<Brand>, onEdit: (Brand) -> Unit, onPreview: (String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         if (brandList.isEmpty()) {
             item {
@@ -531,7 +552,7 @@ fun BrandList(brandList: List<Brand>, onEdit: (Brand) -> Unit,onPreview:(String)
         }
 
         itemsIndexed(brandList) { index, brand ->
-            BrandListItem(brand = brand, onEdit,onPreview = onPreview)
+            BrandListItem(brand = brand, onEdit, onPreview = onPreview)
             if (index < brandList.lastIndex) {
                 HorizontalDivider(thickness = 0.5.dp)
             }
@@ -542,7 +563,7 @@ fun BrandList(brandList: List<Brand>, onEdit: (Brand) -> Unit,onPreview:(String)
 }
 
 @Composable
-fun BrandListItem(brand: Brand, onEdit: (Brand) -> Unit,onPreview: (String)->Unit) {
+fun BrandListItem(brand: Brand, onEdit: (Brand) -> Unit, onPreview: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -554,7 +575,7 @@ fun BrandListItem(brand: Brand, onEdit: (Brand) -> Unit,onPreview: (String)->Uni
             AsyncImage(
                 model = brand.brandImage,
                 modifier = Modifier.clip(MaterialTheme.shapes.medium).width(40.dp)
-                    .height(40.dp).clickable(){
+                    .height(40.dp).clickable() {
                         onPreview(brand.brandImage.toString())
                     },
                 contentDescription = "Brand Image",
@@ -566,11 +587,11 @@ fun BrandListItem(brand: Brand, onEdit: (Brand) -> Unit,onPreview: (String)->Uni
                 placeholder = painterResource(Res.drawable.img_placeholder)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = brand.brandName.capitalize(Locale.current))
-                Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = brand.brandName.capitalize(Locale.current),
+                style = MaterialTheme.typography.bodyMedium
+            )
 
-            }
 
         }
 
@@ -587,7 +608,7 @@ fun BrandListItem(brand: Brand, onEdit: (Brand) -> Unit,onPreview: (String)->Uni
             IconButton(onClick = {
                 onEdit(brand)
             }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                Icon(Icons.Outlined.Edit, contentDescription = "Edit")
             }
         }
     }

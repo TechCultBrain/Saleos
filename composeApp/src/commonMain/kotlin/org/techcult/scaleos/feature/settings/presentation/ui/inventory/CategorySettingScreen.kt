@@ -375,7 +375,7 @@ fun CategoryListItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             ParentChip(
-                if (category.parentName.isNullOrEmpty()) "No Parent" else (category.parentName),
+                if (category.parentName.isNullOrEmpty()) "Parent" else (category.parentName),
                 category.parentId == null
             )
         }

@@ -53,8 +53,8 @@ sealed interface CategorySettingsAction {
 
 enum class AvailabilityFilter(val dbValue: Int) {
     ALL(0),
-    AVAILABLE(1),
-    UNAVAILABLE(2)
+    ACTIVE(1),
+    INACTIVE(2)
 }
 
 sealed interface CategoryEvents{
