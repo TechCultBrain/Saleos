@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,9 +23,11 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -36,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.ktor.client.request.invoke
 import org.techcult.scaleos.core.utils.DeviceConfiguration
 
 @Composable
@@ -53,22 +57,15 @@ fun SettingsHomeContent(
     val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = "Settings", style = MaterialTheme.typography.titleLarge) },
-        )
-    }, containerColor = MaterialTheme.colorScheme.surface
+
+    }, containerColor = Color(0xFFF9FAFB)
     ) { padding ->
 
         if (deviceConfiguration == DeviceConfiguration.DESKTOP || deviceConfiguration == DeviceConfiguration.TABLET_LANDSCAPE) {
-
-
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().padding(
-                    top = padding.calculateTopPadding(),
-                    start = 16.dp,
-                    end = 16.dp
-                ),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalItemSpacing = 16.dp
             ) {
@@ -78,11 +75,7 @@ fun SettingsHomeContent(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.padding(
-                    top = padding.calculateTopPadding().plus(16.dp),
-                    start = 16.dp,
-                    end = 16.dp
-                ),verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier,verticalArrangement = Arrangement.spacedBy(16.dp),contentPadding = PaddingValues(16.dp)
             ) {
                 items(settingsCategories) { category ->
                     SettingsCard(category = category, onNavigate = onNavigate)
@@ -99,12 +92,14 @@ fun SettingsCard(
     category: SettingsCategory,
     onNavigate: (String) -> Unit
 ) {
-    Card(
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(0.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(0.1f))
+        shape = MaterialTheme.shapes.medium,
+        shadowElevation = 2.dp,
+        color = Color.White,
+
+
+
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             SettingsHeader(
@@ -113,6 +108,7 @@ fun SettingsCard(
                 subtitle = category.subtitle
             )
             Spacer(modifier = Modifier.size(16.dp))
+
             category.items.forEach { item ->
                 SettingsItem(item = item, onClick = { onNavigate(item.route) })
             }
@@ -130,7 +126,7 @@ fun SettingsHeader(icon: ImageVector, title: String, subtitle: String) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                .background(Color(0xFFEFF6FF))
                 .padding(8.dp),
             tint = MaterialTheme.colorScheme.primary
         )
@@ -164,8 +160,8 @@ fun SettingsItem(item: SettingsItemData, onClick: () -> Unit) {
             }
             Text(
                 text = item.subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             )
         }
         Icon(

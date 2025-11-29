@@ -7,5 +7,9 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun ProductSettingScreen(
+    onBack: () -> Unit
 ) {
+
+    Text("Product Setting Screen")
+
 }

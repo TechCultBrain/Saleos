@@ -4,12 +4,15 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.techcult.scaleos.core.data.database.DatabaseFactory
+import org.techcult.scaleos.feature.product.di.productModule
+import org.techcult.scaleos.feature.settings.di.settingsModule
 
 expect val platformModule: Module
 
 val coreModule = module {
 
-    includes(platformModule)
+
+    includes(settingsModule,platformModule,productModule)
     single {
         get<DatabaseFactory>().create()
 

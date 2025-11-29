@@ -10,13 +10,13 @@ import kotlin.uuid.Uuid
 
 @Entity(tableName = "brands")
 data class BrandEntity(
-    @PrimaryKey val id: String = Uuid.random().toString(),
+    @PrimaryKey val id: String,
     val brandName: String,
     val brandDescription: String? = null,
     val brandImage: String? = null,
-    val isDeleted: Boolean = false,
+    val isAvailable: Boolean = false,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime? = null,
-    val updatedBy: String,
-    val createdBy: String,
+    val updatedBy: String?=null,
+    val createdBy: String?=null,
 )

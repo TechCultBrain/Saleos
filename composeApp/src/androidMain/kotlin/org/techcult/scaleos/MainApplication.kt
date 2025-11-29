@@ -2,14 +2,14 @@ package org.techcult.scaleos
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import org.techcult.scaleos.core.di.initScaleOsKoin
 
-class ScaleosApp : Application(){
+class MainApplication : Application(){
     override fun onCreate() {
         super.onCreate()
-        startKoin {
-            androidContext(this@ScaleosApp)
-
+        initScaleOsKoin()
+        {
+            androidContext(this@MainApplication)
         }
 
     }

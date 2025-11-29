@@ -43,17 +43,17 @@ val settingsCategories = listOf(
             SettingsItemData(
                 title = "Dashboard Settings",
                 subtitle = "Customize your dashboard layout and widgets",
-                route = ""
+                route = SettingsRoutes.Dashboard.route
             ),
             SettingsItemData(
                 title = "Language & Currency",
                 subtitle = "Localization and regional settings",
-                route = ""
+                route = SettingsRoutes.Localization.route
             ),
             SettingsItemData(
                 title = "Notifications",
                 subtitle = "Alert preferences and notification settings",
-                route = ""
+                route = SettingsRoutes.Notifications.route
             )
         )
     ),
@@ -65,12 +65,12 @@ val settingsCategories = listOf(
             SettingsItemData(
                 title = "User Management",
                 subtitle = "Create and manage user accounts",
-                route = ""
+                route = SettingsRoutes.UserManagement.route
             ),
             SettingsItemData(
                 title = "Role & Permission Management",
                 subtitle = "Configure user roles and permissions",
-                route = ""
+                route = SettingsRoutes.RolePermission.route
             )
         )
     ),
@@ -82,7 +82,8 @@ val settingsCategories = listOf(
             SettingsItemData(
                 title = "Staff Management",
                 subtitle = "Manage employee information and schedules",
-                route = ""
+                route = SettingsRoutes.StaffManagement.route
+
             )
         )
     ),
@@ -113,12 +114,12 @@ val settingsCategories = listOf(
             SettingsItemData(
                 title = "Receipt template",
                 subtitle = "Customize receipt layout and branding",
-                route = ""
+                route = SettingsRoutes.Receipt.route
             ),
             SettingsItemData(
                 title = "Printer & Device Settings",
                 subtitle = "Configure printers and hardware devices",
-                route = ""
+                route = SettingsRoutes.Printer.route
             )
         )
     ),
@@ -130,39 +131,69 @@ val settingsCategories = listOf(
             SettingsItemData(
                 title = "Product Management",
                 subtitle = "Manage products, pricing, and specifications",
-                route = ""
+                route = SettingsRoutes.Product.route
             ),
             SettingsItemData(
                 title = "Suppliers",
                 subtitle = "Manage supplier information and relationships",
-                route = ""
+                route = SettingsRoutes.Supplier.route
+            ),
+            SettingsItemData(
+                title = "Departments",
+                subtitle = "Organize products into departments for better organization",
+                route = SettingsRoutes.Department.route
             ),
             SettingsItemData(
                 title = "Categories",
                 subtitle = "Organize products into categories and subcategories",
-                route = ""
+                route = SettingsRoutes.Category.route
             ),
+            SettingsItemData(
+                title = "Brands",
+                subtitle = "Manage brands and differentiate products",
+                route = SettingsRoutes.Brand.route
+            ),
+            SettingsItemData(
+                title = "Inventory Management",
+                subtitle = "Track and manage inventory levels",
+                route = SettingsRoutes.Inventory.route
+            ),
+
             SettingsItemData(
                 title = "Stock Levels",
                 subtitle = "Monitor and manage inventory levels",
-                route = ""
+                route = SettingsRoutes.Inventory.route
             ),
-            SettingsItemData(
-                title = "Stock Receipts",
-                subtitle = "Track and manage stock receipts",
-                route = ""
-            ),
+
             SettingsItemData(
                 title = "Units of Measure",
                 subtitle = "Define and manage measurement units for products",
-                route = ""
+                route = SettingsRoutes.Unit.route
             ),
             SettingsItemData(
                 title = "Batch & MRP Management",
                 subtitle = "Manage product batches with different MRPs and expiry dates",
-                route = "",
+                route = SettingsRoutes.Batch.route,
                 tag = SettingsTag.NEW
             )
+        )
+    ), SettingsCategory(
+        title = "Purchase Settings",
+        subtitle = "Purchase management settings",
+        icon = Icons.Default.Inventory,
+        items = listOf(
+
+            SettingsItemData(
+                title = "Purchase Settings",
+                subtitle = "Manage purchase settings",
+                route = SettingsRoutes.PurchaseSettings.route,
+            ),
+            SettingsItemData(
+                title = "Supplier Management",
+                subtitle = "Manage supplier information and relationships",
+                route = SettingsRoutes.Supplier.route
+
+            ),
         )
     )
 )

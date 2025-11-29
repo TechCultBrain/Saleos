@@ -3,6 +3,8 @@
 package org.techcult.scaleos.feature.product.data.repository
 
 
+import com.techcult.salesman.core.domain.DataError
+import com.techcult.salesman.core.domain.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
@@ -12,19 +14,23 @@ import org.techcult.scaleos.feature.product.data.mapper.toDomain
 import org.techcult.scaleos.feature.product.data.mapper.toEntity
 import org.techcult.scaleos.feature.product.domain.model.Category
 import org.techcult.scaleos.feature.product.domain.repository.CategoryRepository
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class CategoryRepositoryImpl(
     private val dao: CategoryDao
 ) : CategoryRepository {
-    override suspend fun upsertCategory(category: Category) {
-        dao.insertCategory(
-            category.toEntity().copy(
-                updatedAt = Clock.System.now()
-                    .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
+    override suspend fun upsertCategory(category: Category): Result<String, DataError> {
+        try {
+            dao.insertCategory(
+                category.toEntity()
             )
-        )
+            return Result.Success(category.id)
+        } catch (ex: Exception) {
+            return Result.Error(DataError.Local.UNKNOWN)
+
+        }
     }
 
 
@@ -49,14 +55,26 @@ class CategoryRepositoryImpl(
     }
 
     override fun getAllCategories(): Flow<List<Category>> =
-        dao.getAllCategories().map { list -> list.map { it.toDomain() } }
+        dao.getAllCategoriesWithMeta()
+            .map { list -> list.map { it.toDomain() } }
 
     override fun searchCategories(query: String): Flow<List<Category>> =
-        dao.searchCategories(query).map { list -> list.map { it.toDomain() } }
+        dao.getAllCategoriesWithMetaByName(query).map { list -> list.map { it.toDomain() } }
 
     override suspend fun getCategoryById(id: String): Category? =
         dao.getCategoryById(id)?.toDomain()
 
     override suspend fun getAllForSync(): List<Category> =
         dao.getAllForSync().map { it.toDomain() }
+
+    override fun observeCategoriesFiltered(
+        availability: AvailabilityFilter,
+        query: String?
+    ): Flow<List<Category>> {
+        return dao.observeCategoriesFiltered(
+            availability = availability.dbValue,
+            query = query
+        ).map { list -> list.map { it.toDomain() } }
+    }
+
 }

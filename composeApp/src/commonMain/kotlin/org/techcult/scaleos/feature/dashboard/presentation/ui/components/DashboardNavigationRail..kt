@@ -7,9 +7,12 @@ import org.techcult.scaleos.feature.dashboard.presentation.ui.root.filterDashboa
 
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
@@ -18,14 +21,24 @@ import androidx.navigation.NavHostController
 fun DashboardNavigationRail(
     navController: NavHostController,
     userRole: UserRole,
-    posType: PosType
+    posType: PosType,
+    modifier: Modifier
 ) {
     val filteredItems = remember(userRole, posType) {
         filterDashboardItems(DashboardNavItems, userRole, posType)
     }
 
     NavigationRail(
-        modifier = Modifier
+        containerColor = Color.White,
+        modifier = modifier,
+        header = {
+            Icon(
+                modifier= Modifier.padding(top = 16.dp),
+                imageVector = Icons.Filled.Menu,
+                contentDescription = null,
+            )
+        },
+
 
     ) {
         filteredItems.forEach { item ->

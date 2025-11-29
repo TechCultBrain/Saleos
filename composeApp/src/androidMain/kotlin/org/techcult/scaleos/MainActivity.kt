@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.techcult.scaleos.core.presentation.ScaleOsApp
 
+
 class MainActivity : ComponentActivity() {
 
     var isLoading: Boolean = true

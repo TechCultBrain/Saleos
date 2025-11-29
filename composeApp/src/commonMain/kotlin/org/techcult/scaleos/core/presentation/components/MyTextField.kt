@@ -40,8 +40,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MyTextField(
     modifier: Modifier = Modifier,
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String? = null,
     placeholder: String? = null,
     leadingIcon: ImageVector? = null,
@@ -104,7 +104,7 @@ fun MyTextField(
                             MaterialTheme.colorScheme.onBackground.copy(0.2f)
                         }
                     ),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
 
                 ) {
                     Box(
@@ -137,7 +137,7 @@ fun MyTextField(
 
                                     innerTextField()
 
-                                    if (value.text.isEmpty() && placeholder != null) {
+                                    if (value.isEmpty() && placeholder != null) {
 
                                         Text(
                                             text = placeholder,
@@ -167,7 +167,6 @@ fun MyTextField(
                 }
             },
             visualTransformation = visualTransformation,
-            interactionSource = interactionSource,
             textStyle = TextStyle.Default.copy(
                 fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                 fontWeight = FontWeight.Normal,
@@ -200,7 +199,7 @@ fun MyTextField(
 fun MyTextPreview() {
     Surface {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            MyTextField(value = TextFieldValue(text = "Hello"), onValueChange = {})
+            MyTextField(value = "Hello", onValueChange = {})
         }
     }
 }

@@ -72,6 +72,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun stockTransactionDao(): StockTransactionDao
 
     companion object {
-        const val DB_NAME = "scaleos.db"
+        const val DB_NAME = "scaleos11.db"
     }
 }
