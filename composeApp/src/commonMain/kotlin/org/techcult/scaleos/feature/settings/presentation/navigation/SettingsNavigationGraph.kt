@@ -82,7 +82,9 @@ fun SettingsNavGraph(navController: NavHostController,paddingValues: PaddingValu
         composable(SettingsRoutes.Department.route) { DepartmentSettingScreen(onBack = {
             navController.navigateUp()
         }) }
-        composable(SettingsRoutes.Supplier.route) { SupplierSettingScreen() }
+        composable(SettingsRoutes.Supplier.route) { SupplierSettingScreen(onBack = {
+            navController.navigateUp()
+        }) }
         composable(SettingsRoutes.Inventory.route) { InventorySettingScreen() }
         composable(SettingsRoutes.Unit.route) { UnitSettingScreen(onBack = {
             navController.navigateUp()

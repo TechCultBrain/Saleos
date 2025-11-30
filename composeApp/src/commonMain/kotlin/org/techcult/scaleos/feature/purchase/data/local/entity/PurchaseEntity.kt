@@ -4,6 +4,7 @@ package org.techcult.scaleos.feature.purchase.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.datetime.LocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -14,9 +15,9 @@ data class PurchaseEntity(
     @PrimaryKey val purchaseUuid: String = Uuid.random().toString(),
 
     val invoiceNumber: String? = null,          // Bill/Invoice number
-    val supplierUuid: String? = null,           // Linked to Supplier module
-    val storeUuid: String? = null,              // If multi-store setup
-    val purchaseDate: Long = Clock.System.now().toEpochMilliseconds(),
+    val supplierId: String? = null,           // Linked to Supplier module
+    val storeId: String? = null,              // If multi-store setup
+    val purchaseDate: LocalDateTime,
     val dueDate: Long? = null,
 
     val totalAmount: Double = 0.0,              // Sum of all items (after discount & tax)
@@ -29,5 +30,10 @@ data class PurchaseEntity(
 
     val notes: String? = null,
     val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
-    val updatedAt: Long = Clock.System.now().toEpochMilliseconds()
+    val updatedAt: Long = Clock.System.now().toEpochMilliseconds(),
+    val isCancelled: Boolean = false,
+    val createdBy: String? = null,
+    val updatedBy: String? = null,
 )
+
+

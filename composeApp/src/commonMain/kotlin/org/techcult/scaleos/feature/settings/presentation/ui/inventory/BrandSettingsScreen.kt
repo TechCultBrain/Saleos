@@ -19,7 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.BrandingWatermark
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.outlined.BrandingWatermark
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
@@ -448,7 +450,10 @@ fun WideBrandScreenUi(
                 onAction(BrandSettingActions.OnAddDialogClick(isAddDialogOpen = true))
 
             },
-            addText = "Add Brand"
+            addText = "Add Brand",
+            icon = {
+                Icon(imageVector = Icons.AutoMirrored.Outlined.BrandingWatermark, contentDescription = "Brand")
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

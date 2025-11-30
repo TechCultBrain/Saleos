@@ -4,16 +4,39 @@ package org.techcult.scaleos.feature.settings.presentation.ui.inventory
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.BrandingWatermark
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.*
+import androidx.compose.material.icons.outlined.AccountTree
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,7 +59,6 @@ import org.techcult.scaleos.core.utils.DeviceConfiguration
 import org.techcult.scaleos.core.utils.ObserveAsEvents
 import org.techcult.scaleos.core.utils.toFormattedString
 import org.techcult.scaleos.feature.product.domain.model.Department
-import org.techcult.scaleos.feature.product.domain.model.Uom
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.CompactPageHeader
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.WidePageHeader
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
@@ -44,9 +66,6 @@ import org.techcult.scaleos.feature.settings.presentation.viewmodel.DepartmentSe
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.DeptSettingActions
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.DeptSettingState
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.DeptSettingsEvents
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.UnitSettingActions
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.UnitSettingState
-import org.techcult.scaleos.feature.settings.presentation.viewmodel.UnitSettingsEvents
 
 @Composable
 fun DepartmentSettingScreen(
@@ -319,7 +338,13 @@ fun WideDepartmentScreenUi(
                 onAction(DeptSettingActions.OnAddDialogClick(isAddDialogOpen = true))
 
             },
-            addText = "Add Department"
+            addText = "Add Department",
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.AccountTree,
+                    contentDescription = "Department"
+                )
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -434,12 +459,17 @@ fun DepartmentListItem(dept: Department, onEdit: (Department) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(4f)) {
-            Text(dept.departmentName.capitalize(Locale.current), modifier = Modifier)
+            Text(
+                dept.departmentName.capitalize(Locale.current),
+                modifier = Modifier,
+                style = MaterialTheme.typography.bodyLarge,
+            )
             dept.description?.let {
                 Text(
                     it.capitalize(Locale.current),
                     modifier = Modifier,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(0.6f)
                 )
             }
         }

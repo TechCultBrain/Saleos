@@ -15,7 +15,7 @@ import kotlin.uuid.Uuid
         ForeignKey(entity = CategoryEntity::class, parentColumns = ["id"], childColumns = ["categoryId"], onDelete = ForeignKey.SET_NULL),
         ForeignKey(entity = DepartmentEntity::class, parentColumns = ["id"], childColumns = ["departmentId"], onDelete = ForeignKey.SET_NULL),
         ForeignKey(entity = BrandEntity::class, parentColumns = ["id"], childColumns = ["brandId"], onDelete = ForeignKey.SET_NULL),
-        ForeignKey(entity = SupplierEntity::class, parentColumns = ["id"], childColumns = ["supplierId"], onDelete = ForeignKey.SET_NULL)
+        ForeignKey(entity = SupplierEntity::class, parentColumns = ["supplierId"], childColumns = ["supplierId"], onDelete = ForeignKey.SET_NULL)
     ],
     indices = [
         Index("categoryId"), Index("departmentId"), Index("brandId"), Index("supplierId")

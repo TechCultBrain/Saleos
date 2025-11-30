@@ -21,4 +21,7 @@ class Converters {
     @TypeConverter
     fun toTagList(tags: String?): List<String>? =
         tags?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
+
+
+
 }

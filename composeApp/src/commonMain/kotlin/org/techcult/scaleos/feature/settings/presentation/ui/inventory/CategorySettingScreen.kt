@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -222,7 +223,12 @@ fun WideScreenUi(
             onAdd = {
                 onAction(CategorySettingsAction.OnAddCategoryClick)
             },
-            addText = "Add Category"
+            addText = "Add Category",
+            icon = {
+                Icon(imageVector = Icons.Outlined.Category, contentDescription = "Category")
+            }
+
+
         )
         Spacer(modifier = Modifier.height(24.dp))
 

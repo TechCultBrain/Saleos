@@ -26,6 +26,7 @@ import org.techcult.scaleos.feature.product.data.local.entity.product.ProductUni
 import org.techcult.scaleos.feature.product.data.local.entity.product.ProductVariantEntity
 import org.techcult.scaleos.feature.product.data.local.entity.product.StockBatchEntity
 import org.techcult.scaleos.feature.product.data.local.entity.product.StockTransactionEntity
+import org.techcult.scaleos.feature.purchase.data.local.entity.PurchaseEntity
 import org.techcult.scaleos.feature.supplier.data.local.dao.SupplierDao
 import org.techcult.scaleos.feature.supplier.data.local.entity.SupplierEntity
 import org.techcult.scaleos.feature.tax.data.local.dao.TaxSlabDao
@@ -48,7 +49,8 @@ import org.techcult.scaleos.feature.tax.data.local.entity.TaxSlabEntity
         ProductPriceEntity::class,
         ProductUnitConversionEntity::class,
         StockBatchEntity::class,
-        StockTransactionEntity::class
+        StockTransactionEntity::class,
+        PurchaseEntity::class
     ],
     version = 1,
     exportSchema = true
@@ -72,6 +74,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun stockTransactionDao(): StockTransactionDao
 
     companion object {
-        const val DB_NAME = "scaleos11.db"
+        const val DB_NAME = "scaleos12.db"
     }
 }

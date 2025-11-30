@@ -13,6 +13,7 @@ import org.techcult.scaleos.feature.product.domain.repository.UnitRepository
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.DepartmentSettingsViewModel
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.SupplierSettingViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.UnitSettingViewModel
 
 val settingsModule= module {
@@ -39,6 +40,11 @@ val settingsModule= module {
     }
     viewModel {
         DepartmentSettingsViewModel(get())
+
+    }
+
+    viewModel {
+        SupplierSettingViewModel(get())
 
     }
 }

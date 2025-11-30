@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -334,7 +337,10 @@ fun WideScreenUi(
                 onAction(UnitSettingActions.OnAddDialogClick(isAddDialogOpen = true))
 
             },
-            addText = "Add Unit"
+            addText = "Add Unit",
+            icon = {
+                Icon(imageVector = Icons.Outlined.Scale, contentDescription = "Unit")
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -366,11 +372,11 @@ fun WideScreenUi(
 fun UnitTable(state: UnitSettingState, action: (UnitSettingActions) -> Unit, x2: List<Uom>) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clip(MaterialTheme.shapes.medium)
             .background(color = androidx.compose.ui.graphics.Color.White)
     ) {
         ListHeader()
-        HorizontalDivider()
+        HorizontalDivider(thickness = 0.5.dp)
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center)
             {
@@ -388,30 +394,42 @@ fun UnitTable(state: UnitSettingState, action: (UnitSettingActions) -> Unit, x2:
 @Composable
 fun ListHeader() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Text(
             "Uom Name",
             modifier = Modifier.weight(3f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             "Uom Symbol",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+
         )
-        Text("Status", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+        Text(
+            "Status",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
         Text(
             text = "CreatedAt",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+
         )
         Text(
             "Actions",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+
         )
     }
 }
@@ -457,11 +475,17 @@ fun UomListItem(uom: Uom, onEdit: (Uom) -> Unit) {
                 )
             }
         }
-        Text(
-            uom.symbol.uppercase(),
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Row(modifier = Modifier.weight(1f)) {
+
+            Text(
+                uom.symbol,
+                modifier = Modifier.clip(shape = MaterialTheme.shapes.small)
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer).padding(horizontal = 8.dp, vertical = 4.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
         Row(modifier = Modifier.weight(1f)) {
             StatusChip(uom.isAvailable)
         }
@@ -474,7 +498,7 @@ fun UomListItem(uom: Uom, onEdit: (Uom) -> Unit) {
             IconButton(onClick = {
                 onEdit(uom)
             }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                Icon(Icons.Outlined.Edit, contentDescription = "Edit")
             }
         }
     }

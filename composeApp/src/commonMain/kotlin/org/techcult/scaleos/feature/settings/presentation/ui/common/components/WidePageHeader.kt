@@ -30,7 +30,8 @@ fun WidePageHeader(
     onExport: (() -> Unit)? = null,
     onImport: (() -> Unit)? = null,
     onAdd: (() -> Unit)? = null,
-    addText: String = "Add"
+    addText: String = "Add",
+    icon: @Composable () -> Unit={}
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -39,10 +40,7 @@ fun WidePageHeader(
     ) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.BrandingWatermark,
-                    contentDescription = null
-                )
+                icon()
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = title,

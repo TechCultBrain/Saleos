@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c1d0c24c97f65d1294348b629dc3b449",
+    "identityHash": "84e29db72c25067677d565a7ac4bb5ed",
     "entities": [
       {
         "tableName": "categories",
@@ -193,19 +193,41 @@
       },
       {
         "tableName": "suppliers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `contactNumber` TEXT, `email` TEXT, `gstNumber` TEXT, `address` TEXT, `city` TEXT, `state` TEXT, `pincode` TEXT, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `createdBy` TEXT, `updatedBy` TEXT, `isDeleted` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`supplierId` TEXT NOT NULL, `supplierName` TEXT NOT NULL, `supplierCode` TEXT NOT NULL, `supplierType` TEXT NOT NULL, `supplierNotes` TEXT, `contactPerson` TEXT, `contactNumber` TEXT, `wssNumber` TEXT, `upiId` TEXT, `emailId` TEXT, `gstNumber` TEXT, `address` TEXT, `city` TEXT, `state` TEXT, `pinCode` TEXT, `openingBalance` REAL NOT NULL, `paymentTerms` TEXT, `creditLimit` REAL, `supplyingBrands` TEXT, `isAvailable` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT, `createdBy` TEXT, `updatedBy` TEXT, PRIMARY KEY(`supplierId`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "supplierId",
+            "columnName": "supplierId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "supplierName",
+            "columnName": "supplierName",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "supplierCode",
+            "columnName": "supplierCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "supplierType",
+            "columnName": "supplierType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "supplierNotes",
+            "columnName": "supplierNotes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contactPerson",
+            "columnName": "contactPerson",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "contactNumber",
@@ -213,8 +235,18 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "email",
-            "columnName": "email",
+            "fieldPath": "wssNumber",
+            "columnName": "wssNumber",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "upiId",
+            "columnName": "upiId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "emailId",
+            "columnName": "emailId",
             "affinity": "TEXT"
           },
           {
@@ -238,9 +270,36 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "pincode",
-            "columnName": "pincode",
+            "fieldPath": "pinCode",
+            "columnName": "pinCode",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "openingBalance",
+            "columnName": "openingBalance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentTerms",
+            "columnName": "paymentTerms",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "creditLimit",
+            "columnName": "creditLimit",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "supplyingBrands",
+            "columnName": "supplyingBrands",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isAvailable",
+            "columnName": "isAvailable",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "createdAt",
@@ -251,8 +310,7 @@
           {
             "fieldPath": "updatedAt",
             "columnName": "updatedAt",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "createdBy",
@@ -263,18 +321,12 @@
             "fieldPath": "updatedBy",
             "columnName": "updatedBy",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "isDeleted",
-            "columnName": "isDeleted",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "supplierId"
           ]
         }
       },
@@ -590,7 +642,7 @@
       },
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `productName` TEXT NOT NULL, `description` TEXT, `productCode` TEXT, `hsnCode` TEXT, `barcode` TEXT, `categoryId` TEXT, `departmentId` TEXT, `brandId` TEXT, `supplierId` TEXT, `imageUrl` TEXT, `tags` TEXT, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `createdBy` TEXT NOT NULL, `updatedBy` TEXT NOT NULL, `isDeleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`departmentId`) REFERENCES `departments`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`brandId`) REFERENCES `brands`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`supplierId`) REFERENCES `suppliers`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `productName` TEXT NOT NULL, `description` TEXT, `productCode` TEXT, `hsnCode` TEXT, `barcode` TEXT, `categoryId` TEXT, `departmentId` TEXT, `brandId` TEXT, `supplierId` TEXT, `imageUrl` TEXT, `tags` TEXT, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `createdBy` TEXT NOT NULL, `updatedBy` TEXT NOT NULL, `isDeleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`departmentId`) REFERENCES `departments`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`brandId`) REFERENCES `brands`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`supplierId`) REFERENCES `suppliers`(`supplierId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -771,7 +823,7 @@
               "supplierId"
             ],
             "referencedColumns": [
-              "id"
+              "supplierId"
             ]
           }
         ]
@@ -1509,11 +1561,124 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "purchase",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`purchaseUuid` TEXT NOT NULL, `invoiceNumber` TEXT, `supplierId` TEXT, `storeId` TEXT, `purchaseDate` TEXT NOT NULL, `dueDate` INTEGER, `totalAmount` REAL NOT NULL, `totalTax` REAL NOT NULL, `totalDiscount` REAL NOT NULL, `netAmount` REAL NOT NULL, `paymentStatus` TEXT NOT NULL, `purchaseStatus` TEXT NOT NULL, `notes` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `isCancelled` INTEGER NOT NULL, `createdBy` TEXT, `updatedBy` TEXT, PRIMARY KEY(`purchaseUuid`))",
+        "fields": [
+          {
+            "fieldPath": "purchaseUuid",
+            "columnName": "purchaseUuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "invoiceNumber",
+            "columnName": "invoiceNumber",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "supplierId",
+            "columnName": "supplierId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "storeId",
+            "columnName": "storeId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "purchaseDate",
+            "columnName": "purchaseDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dueDate",
+            "columnName": "dueDate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "totalAmount",
+            "columnName": "totalAmount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTax",
+            "columnName": "totalTax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalDiscount",
+            "columnName": "totalDiscount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "netAmount",
+            "columnName": "netAmount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentStatus",
+            "columnName": "paymentStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "purchaseStatus",
+            "columnName": "purchaseStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCancelled",
+            "columnName": "isCancelled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdBy",
+            "columnName": "createdBy",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedBy",
+            "columnName": "updatedBy",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "purchaseUuid"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c1d0c24c97f65d1294348b629dc3b449')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '84e29db72c25067677d565a7ac4bb5ed')"
     ]
   }
 }
