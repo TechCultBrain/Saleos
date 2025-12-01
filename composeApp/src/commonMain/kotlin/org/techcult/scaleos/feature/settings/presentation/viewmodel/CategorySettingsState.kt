@@ -57,6 +57,11 @@ enum class AvailabilityFilter(val dbValue: Int) {
     INACTIVE(2)
 }
 
+enum class ActiveFilter(val identifier: String, val dbValue: Int) {
+    ACTIVE("Active", 1),
+    INACTIVE("Inactive", 2)
+}
+
 sealed interface CategoryEvents{
     data class OnSuccess(val message: String) : CategoryEvents
     data class OnError(val message: String) : CategoryEvents

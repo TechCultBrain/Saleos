@@ -199,15 +199,24 @@ private fun VisualDesignFields(
 }
 
 @Composable
-fun AvailabilityField(state: Boolean, onChange: (Boolean) -> Unit) {
+fun AvailabilityField(
+    state: Boolean,
+    onChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    title: String=""
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text("Available", style = MaterialTheme.typography.titleMedium)
-            Text("Make this category available", style = MaterialTheme.typography.bodySmall)
+            Text(if (state) "Active" else "InActive", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Make  $title" + if (state) "active" else "inactive",
+                modifier = Modifier.padding(top = 4.dp),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
         Switch(
             checked = state,

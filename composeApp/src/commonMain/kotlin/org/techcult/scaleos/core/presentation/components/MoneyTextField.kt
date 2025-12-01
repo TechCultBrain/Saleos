@@ -1,6 +1,7 @@
 package org.techcult.scaleos.core.presentation.components
 
 
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -36,9 +37,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.techcult.scaleos.core.utils.formatDouble
 
 @Composable
-fun MyTextField(
+fun MoneyTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
@@ -83,7 +85,14 @@ fun MyTextField(
             readOnly = readOnly,
             modifier = Modifier.padding(
 
-            ).height(45.dp),// Padding for the BasicTextField content
+            ).height(45.dp).onFocusChanged{
+                if (it.isFocused){
+                    focusRequester.requestFocus()
+                }
+                else{
+                    onValueChange(formatDouble(value.toDoubleOrNull()))
+                }
+            },// Padding for the BasicTextField content
 
             value = value,
             onValueChange = { it ->
@@ -101,7 +110,7 @@ fun MyTextField(
                         width = if (focused.value) {
                             2.dp
                         } else {
-                           1.dp
+                            1.dp
                         },
                         color = if (focused.value) {
                             MaterialTheme.colorScheme.onSurface.copy(0.5f)
@@ -207,12 +216,3 @@ fun MyTextField(
 
 }
 
-@Preview()
-@Composable
-fun MyTextPreview() {
-    Surface {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            MyTextField(value = "Hello", onValueChange = {})
-        }
-    }
-}

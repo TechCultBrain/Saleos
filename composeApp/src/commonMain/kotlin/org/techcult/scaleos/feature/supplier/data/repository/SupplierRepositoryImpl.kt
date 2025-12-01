@@ -4,6 +4,7 @@ import com.techcult.salesman.core.domain.DataError
 import com.techcult.salesman.core.domain.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.AvailabilityFilter
 import org.techcult.scaleos.feature.supplier.data.local.dao.SupplierDao
 import org.techcult.scaleos.feature.supplier.data.mapper.toSupplier
 import org.techcult.scaleos.feature.supplier.data.mapper.toSupplierEntity
@@ -24,9 +25,9 @@ class SupplierRepositoryImpl(val supplierDao: SupplierDao) : SupplierRepository 
 
     override fun observeFilteredSupplier(
         query: String?,
-        statusFilter: Int
+        statusFilter: AvailabilityFilter
     ): Flow<List<Supplier>> {
-        return supplierDao.observeSuppliersWithStatsFiltered(statusFilter, query).map { s ->
+        return supplierDao.observeSuppliersWithStatsFiltered(statusFilter.dbValue, query).map { s ->
             s.map {
                 it.toSupplier()
             }
@@ -34,4 +35,8 @@ class SupplierRepositoryImpl(val supplierDao: SupplierDao) : SupplierRepository 
         }
 
     }
+
+    override fun getSupplierCount(): Flow<Int> {
+        return supplierDao.getSupplierCount()
+        }
 }

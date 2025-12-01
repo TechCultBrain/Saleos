@@ -1,6 +1,5 @@
 package org.techcult.scaleos.core.presentation.components
 
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -24,8 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MyTextField(
+fun MyMultiLineTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
@@ -65,9 +62,6 @@ fun MyTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState()
-    val focusRequester=remember {
-        FocusRequester()
-    }
 
     Column(modifier = modifier.padding()) {
         if (label != null) {
@@ -79,29 +73,30 @@ fun MyTextField(
         }
         Spacer(modifier = Modifier.height(4.dp))
         BasicTextField(
-            minLines = minLines,
+            minLines = 3,
             readOnly = readOnly,
             modifier = Modifier.padding(
 
-            ).height(45.dp),// Padding for the BasicTextField content
+            ), // Padding for the BasicTextField content
 
             value = value,
             onValueChange = { it ->
                 onValueChange(it)
             },
             keyboardOptions = keyboardOptions,
-            singleLine = singleLine,
-            maxLines = maxLines,
+            singleLine = false,
+            maxLines = 4,
+
 
             decorationBox = { innerTextField ->
                 Surface(
-                    modifier = Modifier.height(48.dp).fillMaxWidth(),
+                    modifier = Modifier.fillMaxSize(),
                     shape = MaterialTheme.shapes.small,
                     border = BorderStroke(
                         width = if (focused.value) {
                             2.dp
                         } else {
-                           1.dp
+                            1.dp
                         },
                         color = if (focused.value) {
                             MaterialTheme.colorScheme.onSurface.copy(0.5f)
@@ -113,9 +108,9 @@ fun MyTextField(
 
                 ) {
                     Box(
-                        contentAlignment = Alignment.CenterStart,
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.TopStart
 
                     ) {
                         Row(
@@ -129,23 +124,15 @@ fun MyTextField(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f),
                                     modifier = Modifier.size(16.dp)
                                 )
-                            } else {
-                                if (prefix != null) {
-                                    Text(
-                                        prefix,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
                             }
 
                             Surface(
-                                modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
                                 color = Color.Transparent
                             ) {
                                 Box(
-                                    modifier = Modifier.padding(vertical = 4.dp).fillMaxSize(),
-                                    contentAlignment = Alignment.CenterStart
+                                    modifier = Modifier.padding(vertical = 8.dp).fillMaxSize(),
+                                    contentAlignment = Alignment.TopStart
                                 ) {
 
                                     innerTextField()
@@ -207,12 +194,3 @@ fun MyTextField(
 
 }
 
-@Preview()
-@Composable
-fun MyTextPreview() {
-    Surface {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            MyTextField(value = "Hello", onValueChange = {})
-        }
-    }
-}

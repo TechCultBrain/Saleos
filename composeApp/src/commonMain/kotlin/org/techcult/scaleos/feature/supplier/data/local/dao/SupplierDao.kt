@@ -105,5 +105,11 @@ interface SupplierDao {
         statusFilter: Int,     // SupplierStatusFilter.dbValue
         query: String?         // search text (optional)
     ): Flow<List<SupplierWithPurchaseStats>>
+
+
+    //Get Supplier Count
+    @Query("SELECT COUNT(*) FROM suppliers")
+    fun getSupplierCount(): Flow<Int>
+
 }
 

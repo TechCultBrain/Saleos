@@ -25,16 +25,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
- fun MyDropDown(
+ fun MyTextDropDown(
     label: String,
     selectedValue: String,
-    options: List<Map<String,String>>,
-    onValueChange: (String,String) -> Unit,
-    leadingIcon: androidx.compose.ui.graphics.vector.ImageVector?=null,
+    options: List<String>,
+    onValueChange: (String) -> Unit,
+    leadingIcon: ImageVector?=null,
     modifier: Modifier=Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -44,8 +45,8 @@ import androidx.compose.ui.unit.dp
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(4.dp))
         ExposedDropdownMenuBox(
+            modifier = Modifier,
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
@@ -66,9 +67,9 @@ import androidx.compose.ui.unit.dp
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option["name"].toString().first().uppercase()+option["name"].toString().substring(1)) },
+                        text = { Text(option.first().uppercase()+option.substring(1)) },
                         onClick = {
-                            onValueChange(option["id"].toString(),option["name"].toString())
+                            onValueChange(option)
                             expanded = false
                         })
                 }
