@@ -30,7 +30,7 @@ data class SupplierEntity(
     // Financial Details
     val openingBalance: Double = 0.0,
     val paymentTerms: String? = null,
-    val creditLimit: Double? = null,
+    val creditLimit: Double=0.0,
     val supplyingBrands: List<String>? = null,
     val isAvailable: Boolean = true,
     val createdAt: LocalDateTime,

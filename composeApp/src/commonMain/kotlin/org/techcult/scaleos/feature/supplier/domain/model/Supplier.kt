@@ -19,6 +19,7 @@ data class Supplier(
     val state: String?,
     val pinCode: String?,
     val openingBalance: Double = 0.0,
+    val creditLimit: Double = 0.0,
     val supplyingBrands: List<String>? = null,
     val isAvailable: Boolean = true,
     val createdAt: LocalDateTime,

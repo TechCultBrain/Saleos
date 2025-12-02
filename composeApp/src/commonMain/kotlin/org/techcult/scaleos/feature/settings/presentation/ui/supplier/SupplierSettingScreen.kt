@@ -70,10 +70,10 @@ import org.techcult.scaleos.core.presentation.components.StatusDropDown
 import org.techcult.scaleos.core.utils.DeviceConfiguration
 import org.techcult.scaleos.core.utils.ObserveAsEvents
 import org.techcult.scaleos.core.utils.PaymentTerms
+import org.techcult.scaleos.core.utils.formatCurrency
 import org.techcult.scaleos.core.utils.toFormattedString
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.CompactPageHeader
 import org.techcult.scaleos.feature.settings.presentation.ui.common.components.WidePageHeader
-import org.techcult.scaleos.feature.settings.presentation.ui.inventory.AvailabilityField
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.DialogButtons
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.DialogHeader
 import org.techcult.scaleos.feature.settings.presentation.ui.inventory.StatusChip
@@ -84,6 +84,7 @@ import org.techcult.scaleos.feature.settings.presentation.viewmodel.SupplierSett
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.SupplierSettingViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.SupplierSettingsEvents
 import org.techcult.scaleos.feature.supplier.domain.model.Supplier
+import org.techcult.scaleos.feature.supplier.utils.SupplierType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,7 +167,14 @@ fun SupplierSettingScreen(
         when (deviceConfiguration) {
             DeviceConfiguration.MOBILE_PORTRAIT -> CompactSupplierScreenUi(
                 state,
-                viewModel::onAction,
+                action = {
+                    when (it) {
+                        is SupplierSettingActions.OnNavigateBack ->
+                            onBack()
+
+                        else -> viewModel.onAction(it)
+                    }
+                },
                 supplierList
             )
 
@@ -269,6 +277,8 @@ fun AddCompactSupplierDialog(
 
 @Composable
 fun CompactBasicFields(state: SupplierSettingState, action: (SupplierSettingActions) -> Unit) {
+    val textPattern = remember { Regex("^[a-zA-Z\\s]*$") } // Allows letters and spaces
+    val alphanumericPattern = remember { Regex("^[a-zA-Z0-9\\s\\n]*$") }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
         MyTextField(
@@ -276,19 +286,26 @@ fun CompactBasicFields(state: SupplierSettingState, action: (SupplierSettingActi
             value = state.supplierName,
             placeholder = "Enter supplier name",
             label = "Supplier Name *",
-            onValueChange = {
-                action(SupplierSettingActions.OnSupplierNameChange(it))
+            isError = state.supplierNameError != null,
+            supportingText = state.supplierNameError,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(textPattern)) {
+                    action(SupplierSettingActions.OnSupplierNameChange(newValue))
+                }
 
-            })
+            }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
+        )
         MyTextField(
+            readOnly = true,
             modifier = Modifier,
             value = state.supplierCode,
             placeholder = "Enter supplier code",
-            label = "Supplier Code *",
+            label = "Supplier Code",
             onValueChange = {
                 action(SupplierSettingActions.OnSupplierCodeChange(it))
 
-            })
+            }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
+        )
         MyTextField(
             modifier = Modifier,
             value = state.contactPerson ?: "",
@@ -298,6 +315,7 @@ fun CompactBasicFields(state: SupplierSettingState, action: (SupplierSettingActi
                 action(SupplierSettingActions.OnContactPersonChange(it))
 
             })
+
         MyTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.supplierNotes ?: "",
@@ -309,29 +327,46 @@ fun CompactBasicFields(state: SupplierSettingState, action: (SupplierSettingActi
             singleLine = false,
             maxLines = 4
         )
-        AvailabilityField(state.isAvailable, onChange = {
+        StatusDropDown(selectedValue = state.isAvailable, onValueChange = {
             action(SupplierSettingActions.OnAvailabilityChange(it))
-        })
+        }, modifier = Modifier)
     }
 
 }
 
 @Composable
 fun CompactContactFields(state: SupplierSettingState, action: (SupplierSettingActions) -> Unit) {
+    val alphanumericPattern = remember { Regex("^[a-zA-Z0-9\\s\\n]*$") }
+    val emailPattern = remember { Regex("^[a-zA-Z0-9\\s\\n@.]*$") }
+    val textPattern = remember { Regex("^[a-zA-Z\\s]*$") } // Allows letters and spaces
+
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         MyTextField(
             modifier = Modifier,
             value = state.email ?: "",
             placeholder = "Enter email address",
-            label = "Email *",
-            onValueChange = { action(SupplierSettingActions.OnEmailChange(it)) }
+            label = "Email",
+            isError = state.emailError != null,
+            supportingText = state.emailError,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(emailPattern))
+                    action(SupplierSettingActions.OnEmailChange(newValue))
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
         MyTextField(
             modifier = Modifier,
             value = state.contactNumber ?: "",
             placeholder = "Enter phone number",
             label = "Phone *",
-            onValueChange = { action(SupplierSettingActions.OnContactNumberChange(it)) }
+            isError = state.contactNumberError != null,
+            supportingText = state.contactNumberError,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(Regex("^[0-9]*$")) && newValue.length <= 10) {
+                    action(SupplierSettingActions.OnContactNumberChange(newValue))
+                }
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone)
         )
 
         MyTextField(
@@ -339,7 +374,11 @@ fun CompactContactFields(state: SupplierSettingState, action: (SupplierSettingAc
             value = state.gstNumber ?: "",
             placeholder = "Enter GST number",
             label = "GST No",
-            onValueChange = { action(SupplierSettingActions.OnGstNumberChange(it)) }
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(alphanumericPattern) && newValue.length <= 16) {
+                    action(SupplierSettingActions.OnGstNumberChange(newValue.uppercase()))
+                }
+            }
         )
         Text(
             "Address Information",
@@ -351,6 +390,8 @@ fun CompactContactFields(state: SupplierSettingState, action: (SupplierSettingAc
             value = state.address ?: "",
             placeholder = "Enter street address",
             label = "Street Address *",
+            isError = state.addressError != null,
+            supportingText = state.addressError,
             onValueChange = { action(SupplierSettingActions.OnAddressChange(it)) }
         )
         MyTextField(
@@ -358,14 +399,26 @@ fun CompactContactFields(state: SupplierSettingState, action: (SupplierSettingAc
             value = state.city ?: "",
             placeholder = "Enter city",
             label = "City *",
-            onValueChange = { action(SupplierSettingActions.OnCityChange(it)) }
+            isError = state.cityError != null,
+            supportingText = state.cityError,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(textPattern))
+                    action(SupplierSettingActions.OnCityChange(newValue))
+            }
         )
         MyTextField(
             modifier = Modifier,
             value = state.state ?: "",
             placeholder = "Enter state or province",
             label = "State/Province *",
-            onValueChange = { action(SupplierSettingActions.OnStateChange(it)) }
+            isError = state.stateError != null,
+            supportingText = state.stateError,
+
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(textPattern)) {
+                    action(SupplierSettingActions.OnStateChange(newValue))
+                }
+            }
         )
 
         MyTextField(
@@ -373,7 +426,12 @@ fun CompactContactFields(state: SupplierSettingState, action: (SupplierSettingAc
             value = state.pinCode ?: "",
             placeholder = "Enter ZIP or postal code",
             label = "ZIP/Postal Code *",
-            onValueChange = { action(SupplierSettingActions.OnPinCodeChange(it)) }
+            isError = state.pinCodeError != null,
+            supportingText = state.pinCodeError,
+            onValueChange = { newValue ->
+                if (newValue.isEmpty() || newValue.matches(Regex("^[0-9]*$")) && newValue.length <= 6)
+                    action(SupplierSettingActions.OnPinCodeChange(newValue))
+            }
         )
     }
 }
@@ -386,6 +444,31 @@ fun CompactBusinessTermsFields(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         MyTextDropDown(
+            label = "Supplier Type",
+            options = SupplierType.entries.map { supplierType -> supplierType.name },
+            selectedValue = state.supplierType,
+            onValueChange = { a1 ->
+                action(SupplierSettingActions.OnSupplierTypeChange(a1))
+            }, modifier = Modifier
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+
+
+
+        MoneyTextField(
+            prefix = "₹",
+            modifier = Modifier,
+            value = state.openingBalance.toString(),
+            placeholder = "0.00",
+            label = "Opening Balance",
+            onValueChange = { newValue ->
+                if (newValue.matches(Regex("^[0-9]*\\.?[0-9]*$")))
+                    action(SupplierSettingActions.OnOpeningBalanceChange(newValue))
+            },
+        )
+
+
+        MyTextDropDown(
             label = "Payment Terms *",
             options = PaymentTerms.entries.map { paymentTerms -> paymentTerms.value },
             selectedValue = state.selectedPaymentTerms,
@@ -393,7 +476,7 @@ fun CompactBusinessTermsFields(
                 action(SupplierSettingActions.OnPaymentTermsChange(a1))
             }
         )
-        MyTextField(
+        MoneyTextField(
             prefix = "₹",
             modifier = Modifier,
             value = state.openingBalance.toString(),
@@ -427,7 +510,14 @@ fun AddSupplierDialog(state: SupplierSettingState, action: (SupplierSettingActio
                     Modifier,
                     TabRowDefaults.primaryContainerColor,
                     TabRowDefaults.primaryContentColor,
-                    @Composable {},
+                    @Composable {
+                        TabRowDefaults.SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(
+                                state.selectedTab.ordinal,
+                                matchContentSize = false
+                            )
+                        )
+                    },
                     @Composable { HorizontalDivider() }) {
                     SupplierDialogTab.entries.forEach { tab ->
                         Tab(
@@ -449,6 +539,7 @@ fun AddSupplierDialog(state: SupplierSettingState, action: (SupplierSettingActio
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 DialogButtons(
                     onDismiss = { action(SupplierSettingActions.OnDismissDialog) },
                     onCreate = { action(SupplierSettingActions.OnSaveClick) },
@@ -493,6 +584,8 @@ fun BasicInfoFields(state: SupplierSettingState, action: (SupplierSettingActions
                 value = state.supplierName,
                 placeholder = "Enter supplier name",
                 label = "Supplier Name *",
+                isError = state.supplierNameError != null,
+                supportingText = state.supplierNameError,
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(textPattern)) {
                         action(SupplierSettingActions.OnSupplierNameChange(newValue))
@@ -506,7 +599,7 @@ fun BasicInfoFields(state: SupplierSettingState, action: (SupplierSettingActions
                 modifier = Modifier.weight(1f),
                 value = state.supplierCode,
                 placeholder = "Enter supplier code",
-                label = "Supplier Code *",
+                label = "Supplier Code",
                 onValueChange = {
                     action(SupplierSettingActions.OnSupplierCodeChange(it))
 
@@ -518,7 +611,7 @@ fun BasicInfoFields(state: SupplierSettingState, action: (SupplierSettingActions
                 modifier = Modifier.weight(1f),
                 value = state.contactPerson ?: "",
                 placeholder = "Enter contact person name",
-                label = "Contact Person *",
+                label = "Contact Person",
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(textPattern)) {
                         action(SupplierSettingActions.OnContactPersonChange(newValue))
@@ -560,7 +653,9 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
                 modifier = Modifier.weight(1f),
                 value = state.email ?: "",
                 placeholder = "Enter email address",
-                label = "Email *",
+                label = "Email",
+                isError = state.emailError != null,
+                supportingText = state.emailError,
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(emailPattern))
                         action(SupplierSettingActions.OnEmailChange(newValue))
@@ -573,6 +668,8 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
                 value = state.contactNumber ?: "",
                 placeholder = "Enter phone number",
                 label = "Phone *",
+                isError = state.contactNumberError != null,
+                supportingText = state.contactNumberError,
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(Regex("^[0-9]*$")) && newValue.length <= 10) {
                         action(SupplierSettingActions.OnContactNumberChange(newValue))
@@ -602,6 +699,8 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
             value = state.address ?: "",
             placeholder = "Enter street address",
             label = "Street Address *",
+            isError = state.addressError != null,
+            supportingText = state.addressError,
             onValueChange = { action(SupplierSettingActions.OnAddressChange(it)) }
         )
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -610,6 +709,8 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
                 value = state.city ?: "",
                 placeholder = "Enter city",
                 label = "City *",
+                isError = state.cityError != null,
+                supportingText = state.cityError,
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(textPattern))
                         action(SupplierSettingActions.OnCityChange(newValue))
@@ -621,6 +722,9 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
                 value = state.state ?: "",
                 placeholder = "Enter state or province",
                 label = "State/Province *",
+                isError = state.stateError != null,
+                supportingText = state.stateError,
+
                 onValueChange = { newValue ->
                     if (newValue.isEmpty() || newValue.matches(textPattern)) {
                         action(SupplierSettingActions.OnStateChange(newValue))
@@ -633,6 +737,8 @@ fun SupplierContactFields(state: SupplierSettingState, action: (SupplierSettingA
             value = state.pinCode ?: "",
             placeholder = "Enter ZIP or postal code",
             label = "ZIP/Postal Code *",
+            isError = state.pinCodeError != null,
+            supportingText = state.pinCodeError,
             onValueChange = { newValue ->
                 if (newValue.isEmpty() || newValue.matches(Regex("^[0-9]*$")) && newValue.length <= 6)
                     action(SupplierSettingActions.OnPinCodeChange(newValue))
@@ -646,7 +752,32 @@ fun BusinessTermsFields(state: SupplierSettingState, action: (SupplierSettingAct
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             MyTextDropDown(
-                label = "Payment Terms *",
+                label = "Supplier Type",
+                options = SupplierType.entries.map { supplierType -> supplierType.name },
+                selectedValue = state.supplierType,
+                onValueChange = { a1 ->
+                    action(SupplierSettingActions.OnSupplierTypeChange(a1))
+                }, modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+
+
+
+            MoneyTextField(
+                prefix = "₹",
+                modifier = Modifier.weight(1f),
+                value = state.openingBalance.toString(),
+                placeholder = "0.00",
+                label = "Opening Balance",
+                onValueChange = { newValue ->
+                    if (newValue.matches(Regex("^[0-9]*\\.?[0-9]*$")))
+                        action(SupplierSettingActions.OnOpeningBalanceChange(newValue))
+                },
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            MyTextDropDown(
+                label = "Payment Terms",
                 options = PaymentTerms.entries.map { paymentTerms -> paymentTerms.name },
                 selectedValue = state.selectedPaymentTerms,
                 onValueChange = { a1 ->
@@ -660,12 +791,12 @@ fun BusinessTermsFields(state: SupplierSettingState, action: (SupplierSettingAct
             MoneyTextField(
                 prefix = "₹",
                 modifier = Modifier.weight(1f),
-                value = state.openingBalance.toString(),
+                value = state.creditLimit.toString(),
                 placeholder = "0.00",
                 label = "Credit Limit",
                 onValueChange = { newValue ->
                     if (newValue.matches(Regex("^[0-9]*\\.?[0-9]*$")))
-                        action(SupplierSettingActions.OnOpeningBalanceChange(newValue))
+                        action(SupplierSettingActions.OnCreditLimitChange(newValue))
                 },
             )
         }
@@ -730,7 +861,7 @@ fun CompactSupplierTable(
 
         }
     } else {
-        LazyColumn(modifier = Modifier.background(Color.White).clip(RoundedCornerShape(8.dp))) {
+        LazyColumn(modifier = Modifier.clip(RoundedCornerShape(16.dp)).background(Color.White)) {
             if (list.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -766,15 +897,25 @@ fun CompactsupplierListItem(supplier: Supplier, onEdit: (Supplier) -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             Column(horizontalAlignment = Alignment.Start) {
-                Text(supplier.supplierName.capitalize(Locale.current))
-                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    supplier.supplierName.capitalize(Locale.current),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    supplier.supplierCode,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
 
             }
         }
+        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        StatusChip(supplier.isAvailable)
+        Spacer(modifier = Modifier.width(8.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            StatusChip(supplier.isAvailable)
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Edit",
                 modifier = Modifier.clickable {
@@ -952,13 +1093,15 @@ fun SupplierListItem(supplier: Supplier, onEdit: (Supplier) -> Unit) {
             modifier = Modifier.weight(2f)
         ) {
             Text(
-                text = supplier.supplierName,
-                style = MaterialTheme.typography.bodyMedium
+                text = supplier.supplierName.capitalize(Locale.current),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = supplier.supplierCode,
-                style = MaterialTheme.typography.bodySmall, color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
         }
@@ -980,14 +1123,17 @@ fun SupplierListItem(supplier: Supplier, onEdit: (Supplier) -> Unit) {
             StatusChip(status = supplier.isAvailable)
 
         }
-        Text(text = supplier.totalPurchases.toString(), modifier = Modifier.weight(1f))
-        supplier.lastOrderDate?.let {
+        Text(
+            text = "₹ " + formatCurrency(supplier.totalPurchases.toString()),
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium
+        )
             Text(
-                text = it.toFormattedString(),
+                text = if (supplier.lastOrderDate == null) "N/A" else supplier.lastOrderDate.toFormattedString(),
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium
             )
-        }
+
         Row(modifier = Modifier.weight(1f)) {
             IconButton(onClick = {
                 onEdit(supplier)

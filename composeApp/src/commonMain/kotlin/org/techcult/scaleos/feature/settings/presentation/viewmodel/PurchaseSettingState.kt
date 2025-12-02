@@ -5,6 +5,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.techcult.scaleos.core.utils.PaymentTerms
 import org.techcult.scaleos.feature.supplier.domain.model.Supplier
+import org.techcult.scaleos.feature.supplier.utils.SupplierType
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -26,7 +27,7 @@ data class SupplierSettingState(
     val supplierId: String? = null,
     val supplierName: String = "",
     val supplierCode: String = "",
-    val supplierType: String = "",
+    val supplierType: String = SupplierType.WHOLESALER.name,
     val supplierNotes: String? = null,
     val contactPerson: String? = null,
     val contactNumber: String? = null,
@@ -39,13 +40,24 @@ data class SupplierSettingState(
     val state: String? = null,
     val pinCode: String? = null,
     val openingBalance: String = "",
+    val creditLimit: String = "",
     val supplyingBrands: List<String>? = null,
     val isAvailable: Boolean = true,
     val isStatusFilter: Boolean = false,
     val createdDate: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val supplierCount: Int = 0,
     val selectedPaymentTerms: String = PaymentTerms.CASH_ON_DELIVERY.value,
-    val selectedSupplier: Supplier? = null
+    val selectedSupplier: Supplier? = null,
+    val errorMessage:String?=null,
+    val supplierNameError:String?=null,
+    val supplierCodeError:String?=null,
+    val contactPersonError:String?=null,
+    val contactNumberError:String?=null,
+    val emailError:String?=null,
+    val addressError:String?=null,
+    val cityError:String?=null,
+    val stateError:String?=null,
+    val pinCodeError:String?=null,
 )
 
 sealed interface SupplierSettingActions {
@@ -64,6 +76,7 @@ sealed interface SupplierSettingActions {
     data class OnStateChange(val state: String) : SupplierSettingActions
     data class OnPinCodeChange(val pinCode: String) : SupplierSettingActions
     data class OnOpeningBalanceChange(val balance: String) : SupplierSettingActions
+    data class OnCreditLimitChange(val limit: String) : SupplierSettingActions
     data class OnAvailabilityChange(val isAvailable: Boolean) : SupplierSettingActions
     data class OnTabSelected(val tab: SupplierDialogTab) : SupplierSettingActions
     data object OnSaveClick : SupplierSettingActions

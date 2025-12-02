@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.techcult.scaleos.core.utils.formatDouble
+import org.techcult.scaleos.core.utils.CurrencyInputVisualTransformation
 
 @Composable
 fun MoneyTextField(
@@ -90,7 +90,7 @@ fun MoneyTextField(
                     focusRequester.requestFocus()
                 }
                 else{
-                    onValueChange(formatDouble(value.toDoubleOrNull()))
+
                 }
             },// Padding for the BasicTextField content
 
@@ -188,7 +188,7 @@ fun MoneyTextField(
                     }
                 }
             },
-            visualTransformation = visualTransformation,
+            visualTransformation = CurrencyInputVisualTransformation(),
             textStyle = TextStyle.Default.copy(
                 fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                 fontWeight = FontWeight.Normal,

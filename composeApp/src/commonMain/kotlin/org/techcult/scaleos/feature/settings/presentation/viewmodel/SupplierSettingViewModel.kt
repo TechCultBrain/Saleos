@@ -25,6 +25,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.techcult.scaleos.core.utils.codeCreator
 import org.techcult.scaleos.feature.supplier.domain.model.Supplier
 import org.techcult.scaleos.feature.supplier.domain.repository.SupplierRepository
+import org.techcult.scaleos.feature.supplier.utils.SupplierType
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -83,37 +84,74 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
                         _state.update {
                             it.copy(
                                 supplierName = action.name,
-                                supplierCode = codeCreator(action.name, it.supplierCount)
+                                supplierCode = codeCreator(action.name, it.supplierCount),
+                                supplierNameError = null
+
                             )
                         }
                     } else {
                         _state.update {
-                            it.copy(supplierName = action.name, supplierCode = "")
+                            it.copy(
+                                supplierName = action.name,
+                                supplierCode = "",
+                                supplierNameError = null
+                            )
                         }
                     }
 
                 } else {
                     _state.update {
-                        it.copy(supplierName = action.name)
+                        it.copy(supplierName = action.name, supplierNameError = null)
                     }
                 }
-                _state.update {
-                    it.copy(supplierName = action.name)
-                }
+
             }
             is SupplierSettingActions.OnSupplierCodeChange -> _state.update { it.copy(supplierCode = action.code) }
             is SupplierSettingActions.OnSupplierTypeChange -> _state.update { it.copy(supplierType = action.type) }
             is SupplierSettingActions.OnSupplierNotesChange -> _state.update { it.copy(supplierNotes = action.notes) }
             is SupplierSettingActions.OnContactPersonChange -> _state.update { it.copy(contactPerson = action.person) }
-            is SupplierSettingActions.OnContactNumberChange -> _state.update { it.copy(contactNumber = action.number) }
+            is SupplierSettingActions.OnContactNumberChange -> _state.update {
+                it.copy(
+                    contactNumber = action.number,
+                    contactNumberError = null
+                )
+            }
             is SupplierSettingActions.OnWssNumberChange -> _state.update { it.copy(wssNumber = action.wssNumber) }
             is SupplierSettingActions.OnUpiIdChange -> _state.update { it.copy(upiId = action.upiId) }
-            is SupplierSettingActions.OnEmailChange -> _state.update { it.copy(email = action.email) }
+            is SupplierSettingActions.OnEmailChange -> _state.update {
+                it.copy(
+                    email = action.email,
+                    emailError = null
+                )
+            }
             is SupplierSettingActions.OnGstNumberChange -> _state.update { it.copy(gstNumber = action.gstNumber) }
-            is SupplierSettingActions.OnAddressChange -> _state.update { it.copy(address = action.address) }
-            is SupplierSettingActions.OnCityChange -> _state.update { it.copy(city = action.city) }
-            is SupplierSettingActions.OnStateChange -> _state.update { it.copy(state = action.state) }
-            is SupplierSettingActions.OnPinCodeChange -> _state.update { it.copy(pinCode = action.pinCode) }
+            is SupplierSettingActions.OnAddressChange -> _state.update {
+                it.copy(
+                    address = action.address,
+                    addressError = null
+                )
+            }
+
+            is SupplierSettingActions.OnCityChange -> _state.update {
+                it.copy(
+                    city = action.city,
+                    cityError = null
+                )
+            }
+
+            is SupplierSettingActions.OnStateChange -> _state.update {
+                it.copy(
+                    state = action.state,
+                    stateError = null
+                )
+            }
+
+            is SupplierSettingActions.OnPinCodeChange -> _state.update {
+                it.copy(
+                    pinCode = action.pinCode,
+                    pinCodeError = null
+                )
+            }
             is SupplierSettingActions.OnOpeningBalanceChange -> _state.update {
                 it.copy(
                     openingBalance = action.balance
@@ -122,7 +160,10 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
 
             is SupplierSettingActions.OnAvailabilityChange -> _state.update { it.copy(isAvailable = action.isAvailable) }
             SupplierSettingActions.OnSaveClick -> saveSupplier()
-            is SupplierSettingActions.OnAddDialogClick -> _state.update { it.copy(isAddDialogOpen = action.isAddDialogOpen) }
+            is SupplierSettingActions.OnAddDialogClick -> {
+                resetFields()
+                _state.update { it.copy(isAddDialogOpen = action.isAddDialogOpen) }
+            }
             is SupplierSettingActions.OnEditOptionClick -> openEditDialog(action.supplier)
             is SupplierSettingActions.OnSearchQueryChange -> {
                 searchQuery.value = action.query.ifBlank { null }
@@ -147,6 +188,12 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
                     it.copy(selectedPaymentTerms = action.paymentTerms)
                 }
             }
+            is SupplierSettingActions.OnCreditLimitChange -> {
+                _state.update {
+                    it.copy(creditLimit = action.limit)
+                }
+            }
+
             else -> {}
         }
     }
@@ -154,75 +201,137 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
     private fun saveSupplier() {
         viewModelScope.launch {
             val currentState = _state.value
-            if (currentState.supplierName.isBlank() || currentState.supplierCode.isBlank()) {
+            if (validateFields()) {
 
-                return@launch
+                val supplier = if (currentState.isEditMode) {
+                    Supplier(
+                        supplierId = currentState.supplierId!!,
+                        supplierName = currentState.supplierName,
+                        supplierCode = currentState.supplierCode,
+                        supplierType = currentState.supplierType,
+                        supplierNotes = currentState.supplierNotes,
+                        contactPerson = currentState.contactPerson,
+                        contactNumber = currentState.contactNumber,
+                        wssNumber = currentState.wssNumber,
+                        upiId = currentState.upiId,
+                        email = currentState.email,
+                        gstNumber = currentState.gstNumber,
+                        address = currentState.address,
+                        city = currentState.city,
+                        state = currentState.state,
+                        pinCode = currentState.pinCode,
+                        openingBalance = if (currentState.openingBalance.isEmpty()) 0.0 else currentState.openingBalance.toDouble(),
+                        creditLimit = if (currentState.creditLimit.isEmpty()) 0.0 else currentState.creditLimit.toDouble(),
+                        supplyingBrands = currentState.supplyingBrands,
+                        isAvailable = currentState.isAvailable,
+                        createdAt = currentState.createdDate,
+                        updatedAt = Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()),
+                        createdBy = null, // TODO: Replace with actual user
+                        updatedBy = null, // TODO: Replace with actual user
+                    )
+                } else {
+                    Supplier(
+                        supplierId = Uuid.random().toString(),
+                        supplierName = currentState.supplierName,
+                        supplierCode = currentState.supplierCode,
+                        supplierType = currentState.supplierType,
+                        supplierNotes = currentState.supplierNotes,
+                        contactPerson = currentState.contactPerson,
+                        contactNumber = currentState.contactNumber,
+                        wssNumber = currentState.wssNumber,
+                        upiId = currentState.upiId,
+                        email = currentState.email,
+                        gstNumber = currentState.gstNumber,
+                        address = currentState.address,
+                        city = currentState.city,
+                        state = currentState.state,
+                        pinCode = currentState.pinCode,
+                        openingBalance = if (currentState.openingBalance.isEmpty()) 0.0 else currentState.openingBalance.toDouble(),
+                        creditLimit = if (currentState.creditLimit.isEmpty()) 0.0 else currentState.creditLimit.toDouble(),
+                        supplyingBrands = currentState.supplyingBrands,
+                        isAvailable = currentState.isAvailable,
+                        createdAt = Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()),
+                        createdBy = null, // TODO: Replace with actual user
+                        updatedBy = null
+                    )
+                }
+
+                repo.upsertSupplier(supplier)
+                    .onSuccess {
+                        _event.send(SupplierSettingsEvents.OnSuccess("Supplier Saved"))
+
+                    }
+                    .onError {
+                        _event.send(SupplierSettingsEvents.OnFailure(it.name))
+
+                    }
+                resetFields()
+
+                _state.update { it.copy(isAddDialogOpen = false) }
             }
-
-            val supplier = if (currentState.isEditMode) {
-                Supplier(
-                    supplierId = currentState.supplierId!!,
-                    supplierName = currentState.supplierName,
-                    supplierCode = currentState.supplierCode,
-                    supplierType = currentState.supplierType,
-                    supplierNotes = currentState.supplierNotes,
-                    contactPerson = currentState.contactPerson,
-                    contactNumber = currentState.contactNumber,
-                    wssNumber = currentState.wssNumber,
-                    upiId = currentState.upiId,
-                    email = currentState.email,
-                    gstNumber = currentState.gstNumber,
-                    address = currentState.address,
-                    city = currentState.city,
-                    state = currentState.state,
-                    pinCode = currentState.pinCode,
-                    openingBalance = currentState.openingBalance.toDouble(),
-                    supplyingBrands = currentState.supplyingBrands,
-                    isAvailable = currentState.isAvailable,
-                    createdAt = currentState.createdDate,
-                    updatedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                    createdBy = null, // TODO: Replace with actual user
-                    updatedBy = null, // TODO: Replace with actual user
-                )
-            } else {
-                Supplier(
-                    supplierId = Uuid.random().toString(),
-                    supplierName = currentState.supplierName,
-                    supplierCode = currentState.supplierCode,
-                    supplierType = currentState.supplierType,
-                    supplierNotes = currentState.supplierNotes,
-                    contactPerson = currentState.contactPerson,
-                    contactNumber = currentState.contactNumber,
-                    wssNumber = currentState.wssNumber,
-                    upiId = currentState.upiId,
-                    email = currentState.email,
-                    gstNumber = currentState.gstNumber,
-                    address = currentState.address,
-                    city = currentState.city,
-                    state = currentState.state,
-                    pinCode = currentState.pinCode,
-                    openingBalance = currentState.openingBalance.toDouble(),
-                    supplyingBrands = currentState.supplyingBrands,
-                    isAvailable = currentState.isAvailable,
-                    createdAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                    createdBy = null, // TODO: Replace with actual user
-                    updatedBy = null
-                )
-            }
-
-             repo.upsertSupplier(supplier)
-                 .onSuccess {
-                     _event.send(SupplierSettingsEvents.OnSuccess("Supplier Saved"))
-
-                 }
-                 .onError {
-                     _event.send(SupplierSettingsEvents.OnFailure(it.name))
-
-                 }
-            resetFields()
-
-            _state.update { it.copy(isAddDialogOpen = false) }
         }
+    }
+
+    private fun validateFields(): Boolean {
+        return if (state.value.supplierName.trim().isEmpty()) {
+            _state.update {
+                it.copy(
+                    supplierNameError = "*Supplier name cannot be empty"
+                )
+            }
+            false
+        } else if (state.value.email.isNullOrEmpty()) {
+            _state.update {
+                it.copy(emailError = "*Enter valid email")
+            }
+            false
+        } else if (state.value.email!!.matches(Regex("^[a-zA-Z0-9\\s\\n@.]*$")).not()) {
+            _state.update {
+                it.copy(emailError = "*Invalid email")
+            }
+            false
+        } else if (state.value.contactNumber.isNullOrEmpty()) {
+            _state.update {
+                it.copy(contactNumberError = "*Contact number cannot be empty")
+            }
+            false
+        } else if (state.value.contactNumber!!.length < 10) {
+            _state.update {
+                it.copy(contactNumberError = "*Contact number should be 10 digits")
+            }
+            false
+        } else if (state.value.address.isNullOrEmpty()) {
+
+            _state.update {
+                it.copy(addressError = "*Address cannot be empty")
+            }
+            false
+        } else if (state.value.city.isNullOrEmpty()) {
+            _state.update {
+                it.copy(cityError = "*City cannot be empty")
+            }
+            false
+        } else if (state.value.pinCode.isNullOrEmpty()) {
+            _state.update {
+                it.copy(pinCodeError = "*Pin code cannot be empty")
+            }
+            false
+
+        } else if (state.value.state.isNullOrEmpty()) {
+            _state.update {
+                it.copy(stateError = "*State cannot be empty")
+            }
+            false
+
+        } else {
+            _state.update {
+                it.copy(errorMessage = null)
+            }
+            true
+        }
+
     }
 
     private fun openEditDialog(supplier: Supplier) {
@@ -245,10 +354,11 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
                 city = supplier.city,
                 state = supplier.state,
                 pinCode = supplier.pinCode,
-                openingBalance ="",
+                openingBalance = supplier.openingBalance.toString(),
                 supplyingBrands = supplier.supplyingBrands,
                 isAvailable = supplier.isAvailable,
-                createdDate = supplier.createdAt
+                createdDate = supplier.createdAt,
+                creditLimit = supplier.creditLimit.toString()
             )
         }
     }
@@ -259,7 +369,7 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
                 isEditMode = false,
                 supplierName = "",
                 supplierCode = "",
-                supplierType = "",
+                supplierType = SupplierType.WHOLESALER.name,
                 supplierNotes = null,
                 contactPerson = null,
                 contactNumber = null,
@@ -272,6 +382,7 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
                 state = null,
                 pinCode = null,
                 openingBalance = "",
+                creditLimit = "",
                 supplyingBrands = null,
                 isAvailable = true,
                 supplierId = null,
@@ -280,3 +391,4 @@ class SupplierSettingViewModel(val repo: SupplierRepository) : ViewModel() {
         }
     }
 }
+

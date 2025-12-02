@@ -23,6 +23,7 @@ fun Supplier.toSupplierEntity(): SupplierEntity {
         state = state,
         pinCode = pinCode,
         openingBalance = openingBalance,
+        creditLimit=creditLimit,
         supplyingBrands = supplyingBrands,
         isAvailable = isAvailable,
         createdAt = createdAt,
@@ -55,7 +56,8 @@ fun SupplierEntity.toSupplier(): Supplier {
         supplierCode = supplierCode,
         supplierNotes = supplierNotes,
         supplierType = supplierType,
-        contactPerson = contactPerson
+        contactPerson = contactPerson,
+        creditLimit = creditLimit
     )
 }
 
@@ -84,6 +86,7 @@ fun SupplierWithPurchaseStats.toSupplier(): Supplier {
         supplierType = supplier.supplierType,
         contactPerson = supplier.contactPerson,
         lastOrderDate = lastPurchaseDate,
-        totalPurchases = totalPurchaseAmount
+        totalPurchases = totalPurchaseAmount,
+        creditLimit = supplier.creditLimit
     )
 }

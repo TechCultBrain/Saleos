@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "84e29db72c25067677d565a7ac4bb5ed",
+    "identityHash": "e9f16ea3980a4bbfa72fcced354c88a9",
     "entities": [
       {
         "tableName": "categories",
@@ -193,7 +193,7 @@
       },
       {
         "tableName": "suppliers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`supplierId` TEXT NOT NULL, `supplierName` TEXT NOT NULL, `supplierCode` TEXT NOT NULL, `supplierType` TEXT NOT NULL, `supplierNotes` TEXT, `contactPerson` TEXT, `contactNumber` TEXT, `wssNumber` TEXT, `upiId` TEXT, `emailId` TEXT, `gstNumber` TEXT, `address` TEXT, `city` TEXT, `state` TEXT, `pinCode` TEXT, `openingBalance` REAL NOT NULL, `paymentTerms` TEXT, `creditLimit` REAL, `supplyingBrands` TEXT, `isAvailable` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT, `createdBy` TEXT, `updatedBy` TEXT, PRIMARY KEY(`supplierId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`supplierId` TEXT NOT NULL, `supplierName` TEXT NOT NULL, `supplierCode` TEXT NOT NULL, `supplierType` TEXT NOT NULL, `supplierNotes` TEXT, `contactPerson` TEXT, `contactNumber` TEXT, `wssNumber` TEXT, `upiId` TEXT, `emailId` TEXT, `gstNumber` TEXT, `address` TEXT, `city` TEXT, `state` TEXT, `pinCode` TEXT, `openingBalance` REAL NOT NULL, `paymentTerms` TEXT, `creditLimit` REAL NOT NULL, `supplyingBrands` TEXT, `isAvailable` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT, `createdBy` TEXT, `updatedBy` TEXT, PRIMARY KEY(`supplierId`))",
         "fields": [
           {
             "fieldPath": "supplierId",
@@ -288,7 +288,8 @@
           {
             "fieldPath": "creditLimit",
             "columnName": "creditLimit",
-            "affinity": "REAL"
+            "affinity": "REAL",
+            "notNull": true
           },
           {
             "fieldPath": "supplyingBrands",
@@ -1678,7 +1679,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '84e29db72c25067677d565a7ac4bb5ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9f16ea3980a4bbfa72fcced354c88a9')"
     ]
   }
 }
