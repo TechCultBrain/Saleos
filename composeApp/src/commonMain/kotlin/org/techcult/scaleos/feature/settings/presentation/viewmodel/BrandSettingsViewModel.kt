@@ -24,6 +24,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.techcult.scaleos.feature.product.domain.model.Brand
 import org.techcult.scaleos.feature.product.domain.repository.BrandRepository
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSettingsEvents.*
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -107,7 +108,7 @@ class BrandSettingsViewModel(val repo: BrandRepository) : ViewModel() {
                             _state.update {
                                 it.copy(isAddDialogOpen = false)
                             }
-                            _event.send(BrandSettingsEvents.OnSuccess(if (state.value.isEditMode) "Brand Updated" else "Brand Added"))
+                            _event.send(OnSuccess(if (state.value.isEditMode) "Brand Updated" else "Brand Added"))
                             resetFields()
 
                         }
@@ -115,7 +116,7 @@ class BrandSettingsViewModel(val repo: BrandRepository) : ViewModel() {
                                 _state.update {
                                     it.copy(isAddDialogOpen = false)
                                 }
-                                _event.send(BrandSettingsEvents.OnFailure(error.name))
+                                _event.send(OnFailure(error.name))
                                 resetFields()
 
                             }
@@ -206,7 +207,7 @@ class BrandSettingsViewModel(val repo: BrandRepository) : ViewModel() {
 
             }
 
-            else -> Unit
+            BrandSettingActions.OnNavigateBack -> TODO()
         }
     }
 

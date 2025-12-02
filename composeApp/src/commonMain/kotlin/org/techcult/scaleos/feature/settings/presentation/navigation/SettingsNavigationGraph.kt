@@ -64,7 +64,9 @@ fun SettingsNavGraph(navController: NavHostController,paddingValues: PaddingValu
         composable(SettingsRoutes.RolePermission.route) { RolePermissionSettingsScreen() }
 
         // --- Pricing ---
-        composable(SettingsRoutes.Tax.route) { TaxSettingScreen() }
+        composable(SettingsRoutes.Tax.route) { TaxSettingScreen(onBack = {
+            navController.navigateUp()
+        }) }
         composable(SettingsRoutes.Discount.route) { DiscountSettingsScreen() }
 
         // --- Products & Inventory ---

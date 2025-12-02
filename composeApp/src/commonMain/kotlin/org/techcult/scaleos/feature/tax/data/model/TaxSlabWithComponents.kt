@@ -6,10 +6,10 @@ import org.techcult.scaleos.feature.tax.data.local.entity.TaxComponentEntity
 import org.techcult.scaleos.feature.tax.data.local.entity.TaxSlabEntity
 
 data class TaxSlabWithComponents(
-    @Embedded val taxSlab: TaxSlabEntity,
+    @Embedded val slab: TaxSlabEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "taxSlabId"
+        entityColumn = "slabId"
     )
     val components: List<TaxComponentEntity>
 )

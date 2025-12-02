@@ -45,7 +45,7 @@ fun MyTextField(
     placeholder: String? = null,
     leadingIcon: ImageVector? = null,
     prefix: String? = null,
-    suffix: String? = null,
+    suffix: @Composable (() -> Unit)? = null,
     trailingIcon: ImageVector? = null,
     onTrailingIconClick: () -> Unit = {},
     isError: Boolean = false,

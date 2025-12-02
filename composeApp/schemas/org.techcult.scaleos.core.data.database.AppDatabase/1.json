@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e9f16ea3980a4bbfa72fcced354c88a9",
+    "identityHash": "6b548573e35b3b1a22a41639afdc60a3",
     "entities": [
       {
         "tableName": "categories",
@@ -395,12 +395,12 @@
       },
       {
         "tableName": "tax_slabs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `taxName` TEXT NOT NULL, `description` TEXT, `totalPercentage` REAL NOT NULL, `isActive` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `createdBy` TEXT, `updatedBy` TEXT, `isDeleted` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `taxName` TEXT NOT NULL, `taxCode` TEXT, `description` TEXT, `totalPercentage` REAL NOT NULL, `isActive` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT, `createdBy` TEXT, `updatedBy` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -408,6 +408,11 @@
             "columnName": "taxName",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "taxCode",
+            "columnName": "taxCode",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "description",
@@ -435,8 +440,7 @@
           {
             "fieldPath": "updatedAt",
             "columnName": "updatedAt",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "createdBy",
@@ -447,12 +451,6 @@
             "fieldPath": "updatedBy",
             "columnName": "updatedBy",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "isDeleted",
-            "columnName": "isDeleted",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -464,18 +462,18 @@
       },
       {
         "tableName": "tax_components",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `taxSlabId` TEXT NOT NULL, `taxName` TEXT NOT NULL, `rate` REAL NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `createdBy` TEXT, `updatedBy` TEXT, `isDeleted` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`taxSlabId`) REFERENCES `tax_slabs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `slabId` INTEGER NOT NULL, `taxName` TEXT NOT NULL, `rate` REAL NOT NULL, `isActive` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`id`) REFERENCES `tax_slabs`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "taxSlabId",
-            "columnName": "taxSlabId",
-            "affinity": "TEXT",
+            "fieldPath": "slabId",
+            "columnName": "slabId",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -491,30 +489,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "createdAt",
-            "columnName": "createdAt",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "updatedAt",
-            "columnName": "updatedAt",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "createdBy",
-            "columnName": "createdBy",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "updatedBy",
-            "columnName": "updatedBy",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "isDeleted",
-            "columnName": "isDeleted",
+            "fieldPath": "isActive",
+            "columnName": "isActive",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -527,13 +503,13 @@
         },
         "indices": [
           {
-            "name": "index_tax_components_taxSlabId",
+            "name": "index_tax_components_slabId",
             "unique": false,
             "columnNames": [
-              "taxSlabId"
+              "slabId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_tax_components_taxSlabId` ON `${TABLE_NAME}` (`taxSlabId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tax_components_slabId` ON `${TABLE_NAME}` (`slabId`)"
           }
         ],
         "foreignKeys": [
@@ -542,7 +518,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "taxSlabId"
+              "id"
             ],
             "referencedColumns": [
               "id"
@@ -1679,7 +1655,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9f16ea3980a4bbfa72fcced354c88a9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6b548573e35b3b1a22a41639afdc60a3')"
     ]
   }
 }

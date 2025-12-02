@@ -14,6 +14,7 @@ import org.techcult.scaleos.feature.settings.presentation.viewmodel.BrandSetting
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.CategorySettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.DepartmentSettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.SupplierSettingViewModel
+import org.techcult.scaleos.feature.settings.presentation.viewmodel.TaxSettingsViewModel
 import org.techcult.scaleos.feature.settings.presentation.viewmodel.UnitSettingViewModel
 
 val settingsModule= module {
@@ -45,6 +46,10 @@ val settingsModule= module {
 
     viewModel {
         SupplierSettingViewModel(get())
+
+    }
+    viewModel {
+        TaxSettingsViewModel(get())
 
     }
 }

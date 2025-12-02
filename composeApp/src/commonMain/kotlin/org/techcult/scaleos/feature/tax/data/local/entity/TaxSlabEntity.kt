@@ -13,14 +13,14 @@ import kotlin.uuid.Uuid
 
 @Entity(tableName = "tax_slabs")
 data class TaxSlabEntity(
-    @PrimaryKey val id: String=Uuid.random().toString(),
+    @PrimaryKey val id: Long = 0L,
     val taxName: String,
-    val description: String?,// e.g., "GST 18%", "Food 5%//
-    val totalPercentage: Double,
+    val taxCode: String?=null,
+    val description: String?=null,// e.g., "GST 18%", "Food 5%//
+    val totalPercentage: Double=0.0,
     val isActive: Boolean = true,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val updatedAt: LocalDateTime?=null,
     val createdBy: String?,
     val updatedBy: String?,
-    val isDeleted: Boolean = false
 )

@@ -7,13 +7,14 @@ import org.techcult.scaleos.core.data.database.DatabaseFactory
 import org.techcult.scaleos.feature.product.di.productModule
 import org.techcult.scaleos.feature.settings.di.settingsModule
 import org.techcult.scaleos.feature.supplier.di.supplierModule
+import org.techcult.scaleos.feature.tax.di.taxModule
 
 expect val platformModule: Module
 
 val coreModule = module {
 
 
-    includes(settingsModule,platformModule,productModule, supplierModule)
+    includes(settingsModule,platformModule,productModule, supplierModule, taxModule)
     single {
         get<DatabaseFactory>().create()
 
